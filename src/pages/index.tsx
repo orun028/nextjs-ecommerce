@@ -1,34 +1,26 @@
-import type { GetServerSideProps, NextPage } from 'next'
-import Layout from '@/components/common/Layout'
-import { Container, Text } from '@chakra-ui/react';
-import Products from '@/components/common/Products';
+import type { NextPage } from 'next'
+import { Container } from '@chakra-ui/react';
 import React from 'react';
+import { Hero, Layout, Products } from '@/components/common';
+import useSWR from 'swr'
 
-type Data = {
-  result: Array<Object>,
-  total: Number
-}
+const fetcher = (url: RequestInfo) => fetch(url).then((res) => res.json())
 
-const Home: NextPage<{ data: Data }> = props => {
-  const [isLoading, setLoading] = React.useState(true)
-  const { result, total } = props.data
+const Home: NextPage = () => {
+  const { data, error } = useSWR('/api/product?page=1&limit=8', fetcher)
+  const { result, total } = data || {result : [], total: 0}
 
-  React.useEffect(() => {
-    async function getData() {
-      if (result && result.length > 0) {
-        setLoading(false)
-      }
-    }
-    if (isLoading) { getData() }
-  }, [])
+  if (error) return <div>Failed to load Product</div>
+  if (!data) return <div>Loading...</div>
 
   return (
     <Layout>
+      <Container maxW={'container.xl'} py='8'>
+        <Hero/>
+      </Container>
 
-      <Container maxW={'container.xl'}>
-        {isLoading ? <p>Loading Please wait...</p> :
-          <Products title="Sản phẩm phổ biến" layout="popular" data={result} />
-        }
+      <Container maxW={'container.xl'} py='8'>
+        <Products title="Sản phẩm phổ biến" layout="popular" data={result} />
       </Container>
 
       {/* end */}
@@ -36,15 +28,4 @@ const Home: NextPage<{ data: Data }> = props => {
   )
 }
 
-export const getServerSideProps: GetServerSideProps = async () => {
-  try {
-    const result = await fetch(`http://localhost:3000/api/product?limit=8`);
-    const data = await result.json();
-
-    return { props: { data } };
-  } catch {
-    return { props: {} };
-  }
-};
-
-export default Home
+export default Home;

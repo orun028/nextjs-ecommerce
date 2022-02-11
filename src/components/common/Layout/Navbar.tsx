@@ -2,9 +2,15 @@ import { Container, Box, Flex, Text, IconButton, Button, Stack, Collapse, Icon, 
 import { BsList, BsX, BsChevronDown, BsChevronUp } from "react-icons/bs";
 import { FiShoppingBag } from "react-icons/fi";
 import NextLink from "next/link"
+import { useAppSelector, useAppDispatch } from '@/lib/redux/hook';
+import Logo from './Logo'
 
 export default function WithSubnavigation() {
     const { isOpen, onToggle } = useDisclosure();
+    const cart = useAppSelector(state => state.cart)
+    const getItemsCount = () => {
+        return cart.reduce((accumulator: any, item: { quantity: any; }) => accumulator + item.quantity, 0);
+    };
 
     return (
         <Box
@@ -23,11 +29,7 @@ export default function WithSubnavigation() {
                 align={'center'}>
 
                 <Flex flex={{ base: 1 }} justify={{ base: 'start' }}>
-                    <Text
-                        fontFamily={'heading'}
-                        color={useColorModeValue('gray.800', 'white')}>
-                        Logo
-                    </Text>
+                    <Logo/>
 
                     <Flex display={{ base: 'none', md: 'flex' }} ml={10}>
                         <DesktopNav />
@@ -37,30 +39,30 @@ export default function WithSubnavigation() {
                 <Stack
                     direction={'row'}
                     spacing={6}>
-                    <Button as={'a'} fontSize={'sm'} fontWeight={400} variant={'link'} href={'#'}> Sign In </Button>
-                    <Popover trigger='hover'>
+                    <Link as={'a'} fontSize={'sm'} fontWeight={400}> Tài khoản </Link>
+                    {/* <Popover trigger='hover'>
                         <PopoverTrigger>
-                            <Box role='button'>
-                                <NextLink href='/cart'>
-                                    <Link>
-                                        <Stack as={Box} direction={'row'} spacing={2} position='relative'>
-                                            <Icon as={FiShoppingBag} w={'5'} h={'5'} />
-                                            <Badge
-                                                px='1.5' py='1px'
-                                                rounded='full'
-                                                position="absolute"
-                                                top={-1.5}
-                                                left={1}
-                                                variant='solid'
-                                                colorScheme='green'
-                                                fontSize='9px'>
-                                                1
-                                            </Badge>
-                                            <Text fontSize='13px' fontWeight='medium'>180,000₫</Text>
-                                        </Stack>
-                                    </Link>
-                                </NextLink>
-                            </Box>
+                            <Box role='button'> */}
+                    <NextLink href='/cart'>
+                        <Link>
+                            <Stack as={Box} direction={'row'} spacing={2} position='relative'>
+                                <Icon as={FiShoppingBag} w={'5'} h={'5'} />
+                                <Badge
+                                    px='1.5' py='1px'
+                                    rounded='full'
+                                    position="absolute"
+                                    top={-1.5}
+                                    left={1}
+                                    variant='solid'
+                                    colorScheme='green'
+                                    fontSize='9px'>
+                                    {getItemsCount()}
+                                </Badge>
+                                <Text fontSize='13px' fontWeight='medium'>180,000₫</Text>
+                            </Stack>
+                        </Link>
+                    </NextLink>
+                    {/* </Box>
                         </PopoverTrigger>
                         <PopoverContent w={'310px'} bg='#29333C' color='white' borderColor='transparent'>
                             <PopoverBody>
@@ -72,7 +74,7 @@ export default function WithSubnavigation() {
                                         objectFit='scale-down'
                                         src='https://yourlimit2-9ede08.ingress-baronn.easywp.com/wp-content/uploads/2021/12/shop-item-1_optimized.webp' />
                                     <Stack flex='1' direction='column'>
-                                        <NextLink href='#' passHref>
+                                        <NextLink href='#'>
                                             <Text as={Link} fontSize='md' fontWeight='medium'>Wayfarer Classic</Text>
                                         </NextLink>
                                         <Text fontSize='sm'>1 x 180,000₫</Text>
@@ -101,7 +103,7 @@ export default function WithSubnavigation() {
                                 </Stack>
                             </PopoverFooter>
                         </PopoverContent>
-                    </Popover>
+                    </Popover> */}
                 </Stack>
                 <Flex
                     display={{ base: 'flex', md: 'none' }}>
@@ -135,18 +137,21 @@ const DesktopNav = () => {
                 <Box key={navItem.label}>
                     <Popover trigger={'hover'} placement={'bottom-start'}>
                         <PopoverTrigger>
-                            <Link
-                                p={2}
-                                href={navItem.href ?? '#'}
-                                fontSize={'sm'}
-                                fontWeight={500}
-                                color={linkColor}
-                                _hover={{
-                                    textDecoration: 'none',
-                                    color: linkHoverColor,
-                                }}>
-                                {navItem.label}
-                            </Link>
+                            <Box role='button'>
+                            <NextLink href={navItem.href ?? '#'}>
+                                <Link
+                                    p={2}
+                                    fontSize={'sm'}
+                                    fontWeight={500}
+                                    color={linkColor}
+                                    _hover={{
+                                        textDecoration: 'none',
+                                        color: linkHoverColor,
+                                    }}>
+                                    {navItem.label}
+                                </Link>
+                            </NextLink>
+                            </Box>
                         </PopoverTrigger>
 
                         {navItem.children && (
@@ -282,7 +287,7 @@ const NAV_ITEMS: Array<NavItem> = [
     },
     {
         label: 'Sản phẩm',
-        href: '/san-pham',
+        href: '/product',
         children: [
             {
                 label: 'Áo phông',
@@ -298,7 +303,7 @@ const NAV_ITEMS: Array<NavItem> = [
     },
     {
         label: 'Bài viết',
-        href: 'bai-viet',
+        href: 'post',
         children: [
             {
                 label: 'Job Board',
@@ -314,6 +319,6 @@ const NAV_ITEMS: Array<NavItem> = [
     },
     {
         label: 'Liên hệ',
-        href: 'lien-he',
+        href: 'contact',
     }
 ];

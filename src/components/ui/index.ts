@@ -1,0 +1,6 @@
+export { default as RadioCard } from './RadioCard'
+export { default as Rating } from './Rating'
+export { default as Pagination } from './Pagination'
+export { default as PagaNotWorking } from './PagaNotWorking'
+export { default as ModalCustom } from './ModalCustom'
+export { default as FileUpload } from './FileUpload'

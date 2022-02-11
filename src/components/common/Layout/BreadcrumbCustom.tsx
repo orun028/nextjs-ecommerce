@@ -1,7 +1,8 @@
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink } from '@chakra-ui/react';
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, Icon } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { ParsedUrlQuery } from 'querystring';
 import React from 'react';
+import { BsHouse } from 'react-icons/bs';
 
 const _defaultGetTextGenerator = (param: String, query: ParsedUrlQuery) => null;
 const _defaultGetDefaultTextGenerator = (path: String) => path;
@@ -27,11 +28,14 @@ export default function BreadcrumbCustom({ getTextGenerator = _defaultGetTextGen
             return { href, textGenerator: getTextGenerator(param, router.query), text: getDefaultTextGenerator(subpath) };
         })
 
-        return [{ href: "/", text: "Trang chủ" }, ...crumblist];
+        return [...crumblist];
     }, [router.asPath, router.pathname, router.query, getTextGenerator, getDefaultTextGenerator]);
 
     return (
         <Breadcrumb>
+            <BreadcrumbItem key={100}>
+                <BreadcrumbLink href='/'><Icon as={BsHouse} /></BreadcrumbLink>
+            </BreadcrumbItem>
             {breadcrumbs.map((crumb, idx) => (
                 <BreadcrumbItem key={idx} isCurrentPage={idx === breadcrumbs.length - 1}>
                     <BreadcrumbLink href={crumb.href}>{crumb.text}</BreadcrumbLink>
