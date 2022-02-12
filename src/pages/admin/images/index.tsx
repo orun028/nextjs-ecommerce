@@ -1,20 +1,21 @@
 import { Sidebar } from '@/components/common';
 import { Box, Button, Container, Flex, FormControl, FormErrorMessage, FormLabel, Icon, Input, Link, SimpleGrid, Stack, useDisclosure } from '@chakra-ui/react';
 import Image from 'next/image';
-import React, { useEffect, useState } from 'react';
+import React, { MouseEventHandler, useEffect, useState } from 'react';
 import { ModalCustom } from '@/components/ui';
 import FileUpload from '@/components/ui/FileUpload';
 import { FiFile } from 'react-icons/fi';
 import { useForm } from 'react-hook-form'
+import firebase from '@/lib/firebase';
 
 type FormValues = {
     file_: FileList
 }
 
 export default function index() {
-    const [data, setData] = useState<Array<any> | null>(null)
+    const [data, setData] = useState<any>(null)
     const [isLoading, setLoading] = useState(true)
-    const [error, setError] = useState(null)
+    const [error, setError] = useState('')
 
     const { isOpen, onOpen, onClose } = useDisclosure()
     const [imgUrl, setImgUrl] = useState<File[]>([])
@@ -23,18 +24,10 @@ export default function index() {
     const onSubmit = handleSubmit(async data => {
         onClose()
         let fileListAsArray: File[] = Array.from(data.file_)
-        await Promise.all(fileListAsArray.map(file => {
-            let reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = function () {
-                /* imgur.upload({
-                    image: String(reader.result).replace(/^data:image\/[a-z]+;base64,/, ""),
-                    album: 'boGthBB'
-                }) */
-            };
-        }
-        )).then(res => { console.log('res',res) })
-        .catch(err=>console.log(err))
+        const values = await Promise.all(fileListAsArray.map(file => {
+            firebase.addImage(file)
+        }))
+        console.log(values)
     })
 
     const validateFiles = (value: FileList) => {
@@ -52,29 +45,25 @@ export default function index() {
     }
 
     const onChangeFile = (value: any) => {
-        if (value.length < 1) {
-            return 'Files is required'
-        }
+        if (value.length < 1) return 'Files is required';
         let fileListAsArray: File[] = Array.from(value.target.files)
         setImgUrl(fileListAsArray)
     }
 
-    const handelClickImgae = (id: string) => {
-        console.log(id)
+    const handelClickImgae = async (path: string, link: string, e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        const metadata = await firebase.getImage(path)
+        console.log(metadata)
+        if(e.ctrlKey){
+
+        }
     }
 
     useEffect(() => {
         async function get() {
-            /* await imgur.getAlbum('boGthBB')
-                .then(res => {
-                    if (res.success) {
-                        setData(res.data.images)
-                        setLoading(false)
-                    }
-                }).catch(err => {
-                    setError(err)
-                    console.log('Error', err)
-                }) */
+            let res = firebase.getAllImages()
+            var arrayOfValues = await Promise.all(await res)
+            setData(arrayOfValues)
+            setLoading(false)
         }
         if (isLoading) (get())
     }, [])
@@ -91,19 +80,24 @@ export default function index() {
                 </Flex>
                 <Button colorScheme={'blackAlpha'} onClick={() => onOpen()}>New item</Button>
             </Stack>
-            <SimpleGrid minChildWidth='120px' spacing='5px'>
-                {data != null && data.map((v: any, i: number) =>
-                    <Link textDecoration="none" _hover={{ textDecoration: 'none' }} key={i} onClick={() => handelClickImgae(v.id)} >
+            <Box>
+                {data && data.map((v: any, i: number) =>
+                    <Link mr='2'
+                        textDecoration="none"
+                        _hover={{ textDecoration: 'none' }}
+                        key={i}
+                        onClick={(e) => handelClickImgae(v.name, v.link, e)} >
                         <Image
-                            objectFit="contain"
+                            objectFit="cover"
                             className='hoverImage'
                             src={v.link}
-                            alt={`Image ${v.id}`}
-                            width={v.width}
-                            height={v.height} />
+                            alt={`Image ${v.name}`}
+                            width="150px"
+                            height="150px"
+                            layout='intrinsic' />
                     </Link>)
                 }
-            </SimpleGrid>
+            </Box>
         </Container>
         <ModalCustom title='New image' isOpen={isOpen} onClose={onClose} handelClick={onSubmit}>
             <form onSubmit={onSubmit}>

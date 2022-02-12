@@ -5,12 +5,12 @@ import React, { useState, useEffect } from 'react';
 import { Sidebar } from '@/components/common';
 import NextLink from 'next/link'
 
-const index: NextPage = () => {
+const ProductPage: NextPage = () => {
     const [data, setData] = useState([])
     const [limit, setLimit] = useState({ page: 1, total: 0 })
     const [isLoading, setLoading] = useState(true)
 
-    const [checkedItems, setCheckedItems] = React.useState([false])
+    const [checkedItems, setCheckedItems] = useState([false])
 
     const allChecked = checkedItems.every(Boolean)
     const isIndeterminate = checkedItems.some(Boolean) && !allChecked
@@ -120,4 +120,4 @@ const index: NextPage = () => {
     </>;
 }
 
-export default index;
+export default ProductPage;
