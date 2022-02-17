@@ -1,34 +1,28 @@
-import { Sidebar } from '@/components/common';
-import { Box, Button, Container, Flex, FormControl, FormErrorMessage, FormLabel, Icon, Input, Link, SimpleGrid, Stack, useDisclosure } from '@chakra-ui/react';
+import { LayoutAdmin } from '@/components/common';
+import { Box, Button, Container, Text, Link, Stack, useBoolean, useDisclosure, useToast, Flex, Heading, MenuButton, Menu, MenuList, MenuItem, CloseButton } from '@chakra-ui/react';
 import Image from 'next/image';
-import React, { MouseEventHandler, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ModalCustom } from '@/components/ui';
 import FileUpload from '@/components/ui/FileUpload';
-import { FiFile } from 'react-icons/fi';
 import { useForm } from 'react-hook-form'
-import firebase from '@/lib/firebase';
+import clsx from 'clsx';
+import { NextPage } from 'next';
 
-type FormValues = {
-    file_: FileList
-}
+import { BsChevronDown } from 'react-icons/bs';
 
-export default function index() {
-    const [data, setData] = useState<any>(null)
+type FormValues = { file_: FileList }
+type ValueData = { name: string, path: string, link: string }
+
+const AdminImages: NextPage = () => {
+    const toast = useToast()
+    const [data, setData] = useState<Array<ValueData>>([])
     const [isLoading, setLoading] = useState(true)
-    const [error, setError] = useState('')
+    const [edit, setEdit] = useState<any>()
 
     const { isOpen, onOpen, onClose } = useDisclosure()
-    const [imgUrl, setImgUrl] = useState<File[]>([])
-
-    const { register, handleSubmit, formState: { errors } } = useForm<FormValues>()
-    const onSubmit = handleSubmit(async data => {
-        onClose()
-        let fileListAsArray: File[] = Array.from(data.file_)
-        const values = await Promise.all(fileListAsArray.map(file => {
-            firebase.addImage(file)
-        }))
-        console.log(values)
-    })
+    const [SCheck, setSCheck] = useBoolean()
+    const [checkImg, setCheckImg] = useState<string[]>([])
+    const { register } = useForm<FormValues>()
 
     const validateFiles = (value: FileList) => {
         if (value.length < 1) {
@@ -44,85 +38,131 @@ export default function index() {
         return true
     }
 
-    const onChangeFile = (value: any) => {
-        if (value.length < 1) return 'Files is required';
-        let fileListAsArray: File[] = Array.from(value.target.files)
-        setImgUrl(fileListAsArray)
+    const onChangeFile = async (value: any) => {
+        /* if (validateFiles(value)) {
+            let fileListAsArray: File[] = Array.from(value.target.files)
+            const values = await firebase.addImage(fileListAsArray)
+            const clone = values.reverse()
+            let cloneData: ValueData[] = clone.concat(data)
+            setData(cloneData)
+        } */
     }
 
-    const handelClickImgae = async (path: string, link: string, e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-        const metadata = await firebase.getImage(path)
-        console.log(metadata)
-        if(e.ctrlKey){
-
+    const handelClickImgae = async (path: string, link: string) => {
+        /* if (SCheck) {
+            if (!checkImg.find(e => e == path)) {
+                setCheckImg([...checkImg, path])
+            } else {
+                const clone = checkImg.filter(e => e != path)
+                setCheckImg(clone)
+            }
+            return
         }
+        let metadata: any = await firebase.getImage(path)
+        setEdit({ link: link, meta: metadata })
+        onOpen() */
+    }
+
+    const deleteImages = async (files: string[]) => {
+       /*  if (files && files.length > 0) {
+            const res = await firebase.deleteImages(files)
+            if (res && data) {
+                toast({ title: `Deleted ${files.length} item`, position: 'bottom-right' })
+                let cloneData = data
+                files.map(value => {
+                    cloneData = cloneData.filter(e => e.path != value)
+                })
+                setData(cloneData)
+            }
+            setSCheck.off()
+        } */
     }
 
     useEffect(() => {
-        async function get() {
-            let res = firebase.getAllImages()
+        async function getData() {
+            /* let res = firebase.getAllImages()
             var arrayOfValues = await Promise.all(await res)
-            setData(arrayOfValues)
-            setLoading(false)
+            if (arrayOfValues) {
+                setData(arrayOfValues)
+                setLoading(false)
+            } */
         }
-        if (isLoading) (get())
-    }, [])
+        if (isLoading) {
+            getData()
+        }
+    })
 
-    if (isLoading) return 'Loading...';
-    if (error) return 'Error!';
-
-    return <>
-        <Sidebar />
-        <Container maxW={'container.xl'} py='6'>
-            <Stack justifyContent={'space-between'} direction='row' mb='4'>
-                <Flex>
-                    <Button>Select images</Button>
-                </Flex>
-                <Button colorScheme={'blackAlpha'} onClick={() => onOpen()}>New item</Button>
+    return <LayoutAdmin>
+        <Container maxW={'container.xl'} py='1'>
+            <Stack justifyContent={'space-between'} direction='row' mb='4' bg={'whiteAlpha.900'} p='1' shadow={'md'} rounded='md'>
+                <Stack direction='row' alignItems='center'>
+                    <Menu>
+                        <MenuButton as={Button} rightIcon={<BsChevronDown />}>
+                            Actions
+                        </MenuButton>
+                        <MenuList>
+                            <MenuItem onClick={() => {
+                                setSCheck.toggle()
+                                setCheckImg([])
+                            }}>Select Images</MenuItem>
+                        </MenuList>
+                    </Menu>
+                    {SCheck && <Button onClick={() => deleteImages(checkImg)}>Delete</Button>}
+                    {SCheck && <CloseButton onClick={()=>setSCheck.off()}/>}
+                </Stack>
+                <Stack justifyContent={'space-between'} direction='row'>
+                    <Flex>
+                        <FileUpload accept={'image/*'} multiple
+                            register={register('file_', { validate: validateFiles, onChange: onChangeFile })} />
+                    </Flex>
+                </Stack>
             </Stack>
-            <Box>
-                {data && data.map((v: any, i: number) =>
-                    <Link mr='2'
-                        textDecoration="none"
-                        _hover={{ textDecoration: 'none' }}
-                        key={i}
-                        onClick={(e) => handelClickImgae(v.name, v.link, e)} >
-                        <Image
-                            objectFit="cover"
-                            className='hoverImage'
-                            src={v.link}
-                            alt={`Image ${v.name}`}
-                            width="150px"
-                            height="150px"
-                            layout='intrinsic' />
-                    </Link>)
-                }
-            </Box>
+            {isLoading
+                ? <Text>Loading...</Text>
+                : <Box>
+                    {data && data.map((v: any, i: number) =>
+                        <Link className={clsx(
+                            checkImg.length != 0 && checkImg.find(e => e == v.path) && 'checkImage',
+                            SCheck && 'selectImage',
+                        )}
+                            key={i} mr='2'
+                            textDecoration="none" _hover={{ textDecoration: 'none' }}
+                            onClick={() => handelClickImgae(v.path, v.link)} >
+                            <Image
+                                objectFit="cover"
+                                className='hoverImage'
+                                src={v.link}
+                                alt={`Image ${v.name}`}
+                                width="150px"
+                                height="150px"
+                                layout='intrinsic' />
+                        </Link>)
+                    }
+                </Box>}
         </Container>
-        <ModalCustom title='New image' isOpen={isOpen} onClose={onClose} handelClick={onSubmit}>
-            <form onSubmit={onSubmit}>
-                <FormControl isInvalid={!!errors.file_} isRequired>
-                    <FormLabel>{'File input'}</FormLabel>
-                    <FileUpload
-                        accept={'image/*'}
-                        multiple
-                        register={register('file_', { validate: validateFiles, onChange: onChangeFile })}>
-                        <Button leftIcon={<Icon as={FiFile} />}>Upload</Button>
-                    </FileUpload>
-
-                    <FormErrorMessage>
-                        {errors.file_ && errors?.file_.message}
-                    </FormErrorMessage>
-                </FormControl>
-
-            </form>
-            <Box py='6'>
-                {(imgUrl && imgUrl.length != 0)
-                    ? <SimpleGrid minChildWidth='120px' spacing='5px'>
-                        {imgUrl.map((v: any, i) => <img key={i} src={URL.createObjectURL(v)} />)}
-                    </SimpleGrid>
-                    : <p>Choose before Pressing the Upload button</p>}
-            </Box>
+        <ModalCustom title='IMAGE' isOpen={isOpen} onClose={onClose}>
+            {edit && <Stack direction={'column'} gap={4}>
+                <Image
+                    objectFit="cover"
+                    className='hoverImage'
+                    src={edit.link}
+                    alt={`Image ${edit.meta.name}`}
+                    width="100%"
+                    height="100%"
+                    layout='responsive' />
+                <Stack direction={'column'}>
+                    <Heading fontSize={'2xl'}>{edit.meta.name}</Heading>
+                    <Text>ContentType: {edit.meta.contentType}</Text>
+                    <Text>Path: {edit.meta.fullPath}</Text>
+                    <Text>Size: {edit.meta.size}bytes</Text>
+                    <Text>Created: {new Date(edit.meta.timeCreated).toLocaleString()}</Text>
+                    <Text>Updated: {new Date(edit.meta.updated).toLocaleString()}</Text>
+                    <Text color='gray.500' isTruncated>Link: <Link href={edit.link}>{edit.link}</Link></Text>
+                </Stack>
+            </Stack>
+            }
         </ModalCustom>
-    </>;
+    </LayoutAdmin>;
 }
+
+export default AdminImages;

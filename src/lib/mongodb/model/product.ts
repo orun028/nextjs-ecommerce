@@ -21,15 +21,11 @@ const Product =  new Schema({
    size: {type: Number, default: 0},
    weight: {type: Number, default: 0},
    image: { 
-      item: String, default: '',
+      item: {type: String, default: null},
       lib: [String]
    },
    category: { type: [Schema.Types.ObjectId], ref: 'Categorys', required: false}
    // supplier: { type: [Mongoose.Schema.Types.ObjectId], ref: Supplier, required: false},
 }, { timestamps: true})
-
-/* if (process.env.NODE_ENV==='development') {
-	delete connection.models['Product'];
-} */
 
 export default models.product || model("product",Product);

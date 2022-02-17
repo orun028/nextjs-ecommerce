@@ -83,7 +83,7 @@ export default function CallToActionWithVideo() {
                             align={'center'}
                             w={'auto'}
                             h={'100%'}
-                            src={'image/Feature x On The Arm V-Day Capsule.jpg'}
+                            src={'image/Feature-Valentin.jpg'}
                         />
                     </Box>
                 </Flex>

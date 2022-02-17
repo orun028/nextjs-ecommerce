@@ -18,10 +18,10 @@ function checkTypeSale({ price, isSale }: { price: number, isSale: { type: strin
 }
 
 const ProductPage: NextPage<{ data: any }> = props => {
+    const dispatch = useAppDispatch()
     if (!props.data) {
         return <ErrorPage statusCode={404} />;
     }
-    const dispatch = useAppDispatch()
     const { _id, name, price, isSale } = props.data
     return (
         <Layout>
@@ -39,7 +39,7 @@ const ProductPage: NextPage<{ data: any }> = props => {
                                     Giảm {isSale.type == 'percent' ? (isSale.value + "%") : String(isSale.value).replace(/(.)(?=(\d{3})+$)/g, '$1,')}
                                     {isSale.type == "value" ? <Box as="span" color={'gray.600'} fontSize="lg">₫ </Box> : ''}
                                 </Badge> : ''}
-                            <Box fontSize="18px" fontWeight='semibold' color={useColorModeValue('gray.800', 'white')}>
+                            <Box fontSize="18px" fontWeight='semibold' color={'gray.800'}>
                                 {String(isSale.status ? checkTypeSale({ price, isSale }) : price).replace(/(.)(?=(\d{3})+$)/g, '$1,')}
                                 <Box as="span" color={'gray.600'} fontSize="lg">₫ </Box>
                             </Box>

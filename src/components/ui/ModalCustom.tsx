@@ -5,9 +5,9 @@ const ModalCustom = ({ children, title, handelClick, onClose, isOpen }:
     {
         children: ReactNode,
         title?: string, 
-        handelClick:MouseEventHandler,
+        handelClick?: MouseEventHandler,
         onClose: () => void, 
-        isOpen: boolean
+        isOpen: boolean,
     }) => {
     return <Modal onClose={onClose} size='xl' isOpen={isOpen}>
         <ModalOverlay />
@@ -18,8 +18,8 @@ const ModalCustom = ({ children, title, handelClick, onClose, isOpen }:
                 {children}
             </ModalBody>
             <ModalFooter>
-                <Button onClick={handelClick} colorScheme='blue' mr={3}>Save</Button>
-                <Button onClick={onClose}>Cancel</Button>
+                {handelClick && <Button onClick={handelClick} colorScheme='blue' mr={3}>Save</Button>}
+                <Button onClick={onClose}>Close</Button>
             </ModalFooter>
         </ModalContent>
     </Modal>;

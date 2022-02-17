@@ -7,3 +7,37 @@
 .hoverImage:hover{
     transform: scale(1.05);
 }
+
+.selectImage{
+    opacity: .5;
+}
+
+.checkImage{
+    opacity: 1;
+}
+
+.border-radius{
+    border-radius: 5px;
+}
+
+.sidebar-linkAdmin-active{
+    background: rgba(255,255,255,.08);
+    color: white !important;
+}
+
+.sidebar-linkAdmin-active>svg{
+    color: white !important;
+}
+
+.wrapperEditor{
+    display: block !important;
+    flex-direction: column;
+    width: 100%;
+    height: 300px;
+}
+.contenEditor{
+    border: 1px solid #f1f1f1 !important;
+    padding: 5px !important;
+    border-radius: 2px !important;
+    height: 65% !important;
+}

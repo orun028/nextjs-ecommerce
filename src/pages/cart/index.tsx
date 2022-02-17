@@ -30,7 +30,7 @@ function HookUsage({ value, increment, decrement }: { value: number, increment: 
     )
 }
 
-const index: NextPage = () => {
+const CartPage: NextPage = () => {
     const cart = useAppSelector((state) => state.cart)
     const dispatch = useAppDispatch()
     const getTotalPrice = () => {
@@ -86,7 +86,7 @@ const index: NextPage = () => {
                                 {cart.map((item: any, i: number) => (
                                     <Stack key={i} as={ListItem} direction='row' p='5' pl='0' justifyContent='space-between' alignItems='start'>
                                         <Flex as={Box} gap='3'>
-                                            <Image src='' fallbackSrc='https://via.placeholder.com/100' />
+                                            <Image src='' fallbackSrc='https://via.placeholder.com/100' alt={'Cart item '+item.name}/>
                                             <Flex direction='column'>
                                                 <Text fontSize='md'>{item.name}</Text>
                                                 <Text color={'gray.500'} fontSize='sm'>Dark blue, 36</Text>
@@ -160,4 +160,4 @@ const index: NextPage = () => {
     );
 }
 
-export default index;
+export default CartPage;

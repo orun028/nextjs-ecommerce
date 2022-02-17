@@ -16,7 +16,7 @@ const Home: NextPage = () => {
   return (
     <Layout>
       <Container maxW={'container.xl'} py='8'>
-        <Hero/>
+        {/* <Hero/> */}
       </Container>
 
       <Container maxW={'container.xl'} py='8'>

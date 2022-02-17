@@ -3,7 +3,7 @@ import client from "@/lib/mongodb";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
   const { body, query, method } = req;
-  const collection = client.ProductModel;
+  const collection = client.CategoryModel;
 
   switch (method) {
     case "GET":
@@ -14,6 +14,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
         if (page >= 1) {
           skipPage = (page - 1) * (limit || 10);
         }
+
         delete query.page;
         delete query.limit;
         await collection

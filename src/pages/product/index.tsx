@@ -6,7 +6,7 @@ import { Container } from '@chakra-ui/react';
 import { NextPage } from 'next';
 import React, { useEffect, useState } from 'react';
 
-const index: NextPage = () => {
+const ShopPage: NextPage = () => {
   const [data, setData] = useState([])
   const [page, setPage] = useState(1)
   const [isLoading, setLoading] = useState(true)
@@ -24,7 +24,7 @@ const index: NextPage = () => {
     if (isLoading) {
       getData()
     }
-  }, [])
+  })
 
   return (
     <Layout>
@@ -41,4 +41,4 @@ const index: NextPage = () => {
   );
 }
 
-export default index;
+export default ShopPage;

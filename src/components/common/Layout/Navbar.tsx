@@ -1,8 +1,8 @@
-import { Container, Box, Flex, Text, IconButton, Button, Stack, Collapse, Icon, Link, Popover, PopoverTrigger, PopoverContent, useColorModeValue, useBreakpointValue, useDisclosure, Badge, PopoverBody, PopoverFooter, Image, ButtonGroup } from '@chakra-ui/react';
+import { Container, Box, Flex, Text, IconButton, Button, Stack, Collapse, Icon, Link, Popover, PopoverTrigger, PopoverContent, useColorModeValue, Badge, PopoverBody, PopoverFooter, Image, ButtonGroup, useDisclosure } from '@chakra-ui/react';
 import { BsList, BsX, BsChevronDown, BsChevronUp } from "react-icons/bs";
 import { FiShoppingBag } from "react-icons/fi";
 import NextLink from "next/link"
-import { useAppSelector, useAppDispatch } from '@/lib/redux/hook';
+import { useAppSelector } from '@/lib/redux/hook';
 import Logo from './Logo'
 
 export default function WithSubnavigation() {
@@ -16,21 +16,20 @@ export default function WithSubnavigation() {
         <Box
             borderBottom={1}
             borderStyle={'solid'}
-            borderColor={useColorModeValue('gray.200', 'gray.900')}
-            bg={useColorModeValue('white', 'gray.800')}
+            borderColor={'gray.200'}
+            bg={'white'}
             shadow='sm'>
             <Container
                 as={Flex}
                 maxW={'container.xl'}
-                color={useColorModeValue('gray.600', 'white')}
+                color={'gray.600'}
                 minH={'60px'}
                 py={{ base: 2 }}
                 px={{ base: 4 }}
                 align={'center'}>
 
                 <Flex flex={{ base: 1 }} justify={{ base: 'start' }}>
-                    <Logo/>
-
+                    <Logo />
                     <Flex display={{ base: 'none', md: 'flex' }} ml={10}>
                         <DesktopNav />
                     </Flex>
@@ -40,9 +39,7 @@ export default function WithSubnavigation() {
                     direction={'row'}
                     spacing={6}>
                     <Link as={'a'} fontSize={'sm'} fontWeight={400}> Tài khoản </Link>
-                    {/* <Popover trigger='hover'>
-                        <PopoverTrigger>
-                            <Box role='button'> */}
+
                     <NextLink href='/cart'>
                         <Link>
                             <Stack as={Box} direction={'row'} spacing={2} position='relative'>
@@ -62,48 +59,6 @@ export default function WithSubnavigation() {
                             </Stack>
                         </Link>
                     </NextLink>
-                    {/* </Box>
-                        </PopoverTrigger>
-                        <PopoverContent w={'310px'} bg='#29333C' color='white' borderColor='transparent'>
-                            <PopoverBody>
-                                <Flex align={'center'} gap='2' py='2' borderBottom='1px' borderColor='gray.600'>
-                                    <Image
-                                        loading='lazy'
-                                        alt='Item cart'
-                                        boxSize='100px'
-                                        objectFit='scale-down'
-                                        src='https://yourlimit2-9ede08.ingress-baronn.easywp.com/wp-content/uploads/2021/12/shop-item-1_optimized.webp' />
-                                    <Stack flex='1' direction='column'>
-                                        <NextLink href='#'>
-                                            <Text as={Link} fontSize='md' fontWeight='medium'>Wayfarer Classic</Text>
-                                        </NextLink>
-                                        <Text fontSize='sm'>1 x 180,000₫</Text>
-                                    </Stack>
-                                    <Box>
-                                        <Icon
-                                            _hover={{ color: "teal.500" }}
-                                            as={BsX}
-                                            w={5}
-                                            h={5}
-                                            onClick={() => { }}
-                                            aria-label={'Remove item cart'} />
-                                    </Box>
-                                </Flex>
-                            </PopoverBody>
-                            <PopoverFooter borderColor={'transparent'}>
-                                <Stack direction='column' gap='8px'>
-                                    <Flex fontWeight={'bold'} justify={'space-between'} align={'center'} >
-                                        <Text>Tính tạm:</Text>
-                                        <Text>180,000₫</Text>
-                                    </Flex>
-                                    <ButtonGroup d='flex' justifyContent='space-between'>
-                                        <Button colorScheme='green'>Xem giỏ hàng</Button>
-                                        <Button variant='outline'>Thanh toán</Button>
-                                    </ButtonGroup>
-                                </Stack>
-                            </PopoverFooter>
-                        </PopoverContent>
-                    </Popover> */}
                 </Stack>
                 <Flex
                     display={{ base: 'flex', md: 'none' }}>
@@ -117,8 +72,6 @@ export default function WithSubnavigation() {
                     />
                 </Flex>
             </Container>
-
-
             <Collapse in={isOpen} animateOpacity>
                 <MobileNav />
             </Collapse>
@@ -127,10 +80,6 @@ export default function WithSubnavigation() {
 }
 
 const DesktopNav = () => {
-    const linkColor = useColorModeValue('gray.600', 'gray.200');
-    const linkHoverColor = useColorModeValue('gray.800', 'white');
-    const popoverContentBgColor = useColorModeValue('white', 'gray.800');
-
     return (
         <Stack direction={'row'} spacing={4}>
             {NAV_ITEMS.map((navItem) => (
@@ -138,19 +87,19 @@ const DesktopNav = () => {
                     <Popover trigger={'hover'} placement={'bottom-start'}>
                         <PopoverTrigger>
                             <Box role='button'>
-                            <NextLink href={navItem.href ?? '#'}>
-                                <Link
-                                    p={2}
-                                    fontSize={'sm'}
-                                    fontWeight={500}
-                                    color={linkColor}
-                                    _hover={{
-                                        textDecoration: 'none',
-                                        color: linkHoverColor,
-                                    }}>
-                                    {navItem.label}
-                                </Link>
-                            </NextLink>
+                                <NextLink href={navItem.href ?? '#'}>
+                                    <Link
+                                        p={2}
+                                        fontSize={'sm'}
+                                        fontWeight={500}
+                                        color={'gray.600'}
+                                        _hover={{
+                                            textDecoration: 'none',
+                                            color: 'gray.800',
+                                        }}>
+                                        {navItem.label}
+                                    </Link>
+                                </NextLink>
                             </Box>
                         </PopoverTrigger>
 
@@ -158,7 +107,7 @@ const DesktopNav = () => {
                             <PopoverContent
                                 border={0}
                                 boxShadow={'xl'}
-                                bg={popoverContentBgColor}
+                                bg={'white'}
                                 p={4}
                                 rounded={'xl'}
                                 minW={'sm'}>
@@ -184,7 +133,7 @@ const DesktopSubNav = ({ label, href, subLabel }: NavItem) => {
             display={'block'}
             p={2}
             rounded={'md'}
-            _hover={{ bg: useColorModeValue('pink.50', 'gray.900') }}>
+            _hover={{ bg: 'pink.50' }}>
             <Stack direction={'row'} align={'center'}>
                 <Box>
                     <Text
@@ -213,7 +162,7 @@ const DesktopSubNav = ({ label, href, subLabel }: NavItem) => {
 const MobileNav = () => {
     return (
         <Stack
-            bg={useColorModeValue('white', 'gray.800')}
+            bg={'white'}
             p={4}
             display={{ md: 'none' }}>
             {NAV_ITEMS.map((navItem) => (
@@ -239,7 +188,7 @@ const MobileNavItem = ({ label, children, href }: NavItem) => {
                 }}>
                 <Text
                     fontWeight={600}
-                    color={useColorModeValue('gray.600', 'gray.200')}>
+                    color={'gray.600'}>
                     {label}
                 </Text>
                 {children && (
@@ -259,7 +208,7 @@ const MobileNavItem = ({ label, children, href }: NavItem) => {
                     pl={4}
                     borderLeft={1}
                     borderStyle={'solid'}
-                    borderColor={useColorModeValue('gray.200', 'gray.700')}
+                    borderColor={'gray.200'}
                     align={'start'}>
                     {children &&
                         children.map((child) => (
@@ -316,9 +265,5 @@ const NAV_ITEMS: Array<NavItem> = [
                 href: '#',
             },
         ],
-    },
-    {
-        label: 'Liên hệ',
-        href: 'contact',
     }
 ];

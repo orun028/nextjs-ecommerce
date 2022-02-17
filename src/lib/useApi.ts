@@ -5,9 +5,7 @@ async function get(url: RequestInfo, headers?: HeadersInit) {
     method: "GET",
     headers: headers,
   });
-  const resData = await response.json();
-
-  return resData;
+  return await response.json();
 }
 async function post(url: RequestInfo, data: BodyInit) {
   const response = await fetch(api + url, {
@@ -21,5 +19,6 @@ async function post(url: RequestInfo, data: BodyInit) {
 
   return resData;
 }
+const useApi = { get, post };
 
-export default { get, post };
+export default useApi;
