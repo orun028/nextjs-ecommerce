@@ -2,7 +2,7 @@ import { NextPage } from "next";
 import { Text, Button, Container, FormControl, FormHelperText, FormLabel, Grid, GridItem, Input, Link, Stack, useColorModeValue, Heading, CheckboxGroup, Checkbox, Box, Tabs, TabList, Tab, TabPanels, TabPanel, Divider, Icon, FormErrorMessage, TagLabel, TagCloseButton, Tag, Accordion, AccordionItem, AccordionButton, AccordionPanel, Select, Spinner } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { LayoutAdmin } from "@/components/common";
-import useSWR, { useSWRConfig } from 'swr';
+import useSWR from 'swr';
 import Image from "next/image";
 import EditorConvertToJSON from "@/components/ui/Editor";
 import { BsDash, BsFillCalendarCheckFill, BsFillCalendarFill, BsFillEyeFill, BsPlus } from "react-icons/bs";
@@ -24,13 +24,11 @@ type FormData = {
 const fetcher = (url: RequestInfo) => fetch(url).then(r => r.json())
 const Action: NextPage = () => {
     const router = useRouter()
-    const { mutate } = useSWRConfig()
     const host = process.env.NEXT_PUBLIC_HOST;
     const { id } = router.query
-    const { data: product, error: errProduct } = useSWR(id ? `/api/product/${id}` : null, fetcher)
+    const { data: product } = useSWR(id ? `/api/product/${id}` : null, fetcher)
     const { data: category } = useSWR('/api/product/category', fetcher)
     const bgColor = useColorModeValue('gray.50', 'whiteAlpha.50');
-    const [load, isLoad] = useState(false)
     const { register, control, setValue, getValues, watch, handleSubmit, formState: { errors } } = useForm<FormData>();
     const [ojb, setOjb] = useState({ item1: '', item2: '' })
     function onSubmit(values: any) {
@@ -45,7 +43,6 @@ const Action: NextPage = () => {
     return <LayoutAdmin>
         <Container maxW={'container.xl'} py='1' bgColor={bgColor}>
             <Stack direction={'row'} mb='4'>
-                {!load && <Spinner />}
                 <Heading size={'xl'}>Edit product</Heading>
                 <Button onClick={() => console.log(product)}>Click</Button>
             </Stack>
@@ -54,7 +51,7 @@ const Action: NextPage = () => {
                     <GridItem colSpan={{ base: 3, md: 2 }}>
                         <Stack gap='4'>
                             <FormControl>
-                                <Input {...register('name', {
+                                <Input defaultValue={product.name} {...register('name', {
                                     required: 'This is required',
                                     minLength: { value: 4, message: 'Minimum length should be 4' },
                                 })}
@@ -99,7 +96,7 @@ const Action: NextPage = () => {
                                         <TabPanel py='1'>
                                             <FormControl isRequired>
                                                 <FormLabel htmlFor='price' fontSize={'sm'}>Price (₫)</FormLabel>
-                                                <Input size="sm" id='price' placeholder='Price product' />
+                                                <Input defaultValue={product.price} size="sm" id='price' placeholder='Price product' />
                                             </FormControl>
                                             <FormControl>
                                                 <FormLabel htmlFor='sale-price' fontSize={'sm'}>Sale price (₫)</FormLabel>
@@ -179,15 +176,12 @@ const Action: NextPage = () => {
                                         render={({ field: { ref, ...rest } }) => (
                                             <CheckboxGroup {...rest}>
                                                 <Stack spacing={2} direction={'column'}>
-                                                    {category.result.map((item: any, i: number) => {
+                                                    {category && category.result.map((item: any, i: number) => {
                                                         return <Checkbox key={i} value={item.name}>{item.name}</Checkbox>
                                                     })}
                                                 </Stack>
                                             </CheckboxGroup>
                                         )}
-                                        /* rules={{
-                                            required: { value: true, message: "This is required." }
-                                        }} */
                                     />
                                 </FormControl>
                                 <Accordion allowMultiple w='full' border={'none'} borderColor={"transparent"}>
@@ -212,7 +206,7 @@ const Action: NextPage = () => {
                                                             setOjb(prev => ({ ...prev, item1: e.target.value }))
                                                         }} />
                                                         <Button onClick={() => {
-                                                            mutate('/api/product/category', { name: ojb.item1 }, false)
+                                                            
                                                         }}>Add</Button>
                                                     </Stack>
                                                 </AccordionPanel>
@@ -269,7 +263,7 @@ const Action: NextPage = () => {
                                 shadow={'md'}
                                 rounded='md'>
                                 <Heading size={'sm'}>IMAGE PRODUCT</Heading>
-                                <Image width={'250px'} height={'250px'} layout='fixed' src='' alt="Image product"/>
+                                <Image width={'250px'} height={'250px'} layout='fixed' src={product.image.item} alt="Image product"/>
                                 {product.image.item ? <Link>add photo from gallery</Link>:<Link>Delete image</Link>}
                             </Stack>
                             <Stack

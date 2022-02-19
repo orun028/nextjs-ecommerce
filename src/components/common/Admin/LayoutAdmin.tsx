@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
-import { IconButton, Box, CloseButton, Flex, Icon, useColorModeValue, Link, Drawer, DrawerContent, Text, useDisclosure, BoxProps, FlexProps, Stack, Menu, MenuButton, MenuList, MenuItem, Button, MenuGroup, MenuDivider, MenuItemOption, MenuOptionGroup, DrawerOverlay, Spacer, } from '@chakra-ui/react';
-import { FiHome, FiTrendingUp, FiCompass, FiStar, FiSettings, FiMenu, } from 'react-icons/fi';
+import { IconButton, Box, CloseButton, Flex, Icon, useColorModeValue, Link, Drawer, DrawerContent, Text, useDisclosure, BoxProps, FlexProps, Stack, Menu, MenuButton, MenuList, MenuItem, Button, MenuGroup, MenuDivider, MenuItemOption, MenuOptionGroup, DrawerOverlay, Spacer, Slide, } from '@chakra-ui/react';
+import { FiHome, FiTrendingUp, FiCompass, FiStar, FiSettings, FiMenu, FiImage, FiTrello, FiUsers, FiShoppingBag, } from 'react-icons/fi';
 import { IconType } from 'react-icons';
 import { ReactText } from 'react';
 import { BsChevronExpand } from 'react-icons/bs';
@@ -27,8 +27,10 @@ const LinkItems: Array<LinkItemProps> = [
     { name: 'Home', type: 'item', icon: FiHome, link: '/admin' },
     {
         name: 'YOUR TAB', type: 'group', children: [
-            { name: 'Images', type: 'item', icon: FiTrendingUp, link: '/admin/images' },
-            { name: 'Product', type: 'item', icon: FiCompass, link: '/admin/product' },
+            { name: 'Product', type: 'item', icon: FiShoppingBag, link: '/admin/product' },
+            { name: 'User', type: 'item', icon: FiUsers, link: '/admin/user' },
+            { name: 'Post', type: 'item', icon: FiTrello, link: '/admin/post' },
+            { name: 'Image', type: 'item', icon: FiImage, link: '/admin/image' },
         ]
     },
     { name: 'Settings', type: 'item', icon: FiSettings, link: '#', align: 'end' },
@@ -37,11 +39,10 @@ const LinkItems: Array<LinkItemProps> = [
 
 export default function SimpleSidebar({ children }: { children: ReactNode }) {
 
-    const { isOpen, onOpen, onClose } = useDisclosure();
+    const { isOpen, onClose, onToggle } = useDisclosure();
     return (
         <Box minH="100vh" bg={'gray.50'}>
             <SidebarContent
-                onClose={() => onClose}
                 display={{ base: 'none', md: 'block' }}
             />
             <Drawer
@@ -54,7 +55,7 @@ export default function SimpleSidebar({ children }: { children: ReactNode }) {
                 </DrawerContent>
             </Drawer>
             {/* mobilenav */}
-            <MobileNav display={{ base: 'flex', md: 'none' }} onOpen={onOpen} />
+            <MobileNav display={{ base: 'flex', md: 'none' }} onOpen={onToggle} />
             <Box ml={{ base: 0, md: 60 }} p="4">
                 {children}
             </Box>
@@ -68,7 +69,7 @@ const SidebarContent = ({ ...rest }) => {
     return (
         <Box
             bg={'blackAlpha.900'}
-            w={{ base: 'full', md: 60 }}
+            w={{base:'full', md: 60}}
             pos="fixed"
             h="full"
             {...rest}>
@@ -113,7 +114,7 @@ const SidebarContent = ({ ...rest }) => {
                     return ea;
                 }
                 if (i.align == 'end') {
-                    let ew: JSX.Element[] = [(<Spacer key={i.name+'flex-end'} />)]
+                    let ew: JSX.Element[] = [(<Spacer key={i.name + 'flex-end'} />)]
                     ew.push(<NavItem key={i.name} icon={i.icon} link={i.link} className={clsx(router.pathname == i.link ? 'sidebar-linkAdmin-active' : '')}>
                         {i.name}
                     </NavItem>)

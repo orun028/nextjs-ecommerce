@@ -33,7 +33,7 @@ const ProductPage: NextPage<{ data: any }> = props => {
                             lineHeight={1.1}
                             fontWeight={'medium'}
                             fontSize={{ base: '2xl', sm: '3xl', lg: '4xl' }}>{name}</Heading>
-                        <Flex justifyContent="start" gap='10px' alignItems='end' mt='5px'>
+                        {isSale && <Flex justifyContent="start" gap='10px' alignItems='end' mt='5px'>
                             {isSale.status
                                 ? <Badge variant='solid' px='2' py='1' colorScheme='green'>
                                     Giảm {isSale.type == 'percent' ? (isSale.value + "%") : String(isSale.value).replace(/(.)(?=(\d{3})+$)/g, '$1,')}
@@ -47,7 +47,7 @@ const ProductPage: NextPage<{ data: any }> = props => {
                                 {String(price).replace(/(.)(?=(\d{3})+$)/g, '$1,')}
                                 <Box as="span">₫</Box>
                             </Text> : ''}
-                        </Flex>
+                        </Flex>}
                         <Rating rating={4.7} numReviews={10} />
                         {/* short description */}
                         <Text color={'gray.500'} fontSize={'lg'}>

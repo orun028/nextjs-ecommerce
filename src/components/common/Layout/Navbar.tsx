@@ -1,9 +1,10 @@
-import { Container, Box, Flex, Text, IconButton, Button, Stack, Collapse, Icon, Link, Popover, PopoverTrigger, PopoverContent, useColorModeValue, Badge, PopoverBody, PopoverFooter, Image, ButtonGroup, useDisclosure } from '@chakra-ui/react';
-import { BsList, BsX, BsChevronDown, BsChevronUp } from "react-icons/bs";
+import { Container, Box, Flex, Text, IconButton, Button, Stack, Collapse, Icon, Link, Popover, PopoverTrigger, PopoverContent, useColorModeValue, Badge, PopoverBody, PopoverFooter, Image, ButtonGroup, useDisclosure, calc } from '@chakra-ui/react';
+import { BsList, BsX, BsChevronDown, BsChevronUp, BsPhone, BsPeople, BsPersonCircle } from "react-icons/bs";
 import { FiShoppingBag } from "react-icons/fi";
 import NextLink from "next/link"
 import { useAppSelector } from '@/lib/redux/hook';
 import Logo from './Logo'
+import SearchBar from './SearchBar';
 
 export default function WithSubnavigation() {
     const { isOpen, onToggle } = useDisclosure();
@@ -27,18 +28,33 @@ export default function WithSubnavigation() {
                 py={{ base: 2 }}
                 px={{ base: 4 }}
                 align={'center'}>
-
+                <NextLink href={'/'}>
+                    <Link>
+                    <Logo w='16.66666666666667%' />
+                    </Link>
+                </NextLink>
                 <Flex flex={{ base: 1 }} justify={{ base: 'start' }}>
-                    <Logo />
+
                     <Flex display={{ base: 'none', md: 'flex' }} ml={10}>
-                        <DesktopNav />
+                        <SearchBar />
+
                     </Flex>
                 </Flex>
 
                 <Stack
                     direction={'row'}
-                    spacing={6}>
-                    <Link as={'a'} fontSize={'sm'} fontWeight={400}> Tài khoản </Link>
+                    spacing={6} alignItems='center'>
+                    <Stack direction={'row'} spacing={6} alignItems='center' display={{ base: 'none', md: 'flex' }}>
+                        <Stack spacing={'1'} direction={'row'} display={{ base: 'none', lg: 'flex' }}>
+                            <Icon as={BsPhone} fontSize='xl' />
+                            <Text fontSize={'sm'}> 0123 123 132 </Text>
+                        </Stack>
+                        <Stack spacing={'1'} direction={'row'}>
+                            <Icon as={BsPersonCircle} fontSize='xl' />
+                            <Link as={'a'} fontSize={'sm'} fontWeight={400}> Tài khoản </Link>
+                        </Stack>
+                    </Stack>
+
 
                     <NextLink href='/cart'>
                         <Link>

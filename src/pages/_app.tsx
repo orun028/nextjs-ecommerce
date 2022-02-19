@@ -14,7 +14,6 @@ function MyApp({ Component, pageProps }: AppProps) {
         <SWRConfig value={{
           onError: (error, key) => {
             if (error.status !== 403 && error.status !== 404) {
-              console.log('Global Error Report')
               // We can send the error to Sentry,
               // or show a notification UI.
             }

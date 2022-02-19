@@ -1,6 +1,7 @@
 import Rating from '@/components/ui/Rating';
-import { Flex, Box, Image, Badge, useColorModeValue, Text, AspectRatio, Link } from '@chakra-ui/react';
+import { Flex, Box, Badge, useColorModeValue, Text, AspectRatio, Link } from '@chakra-ui/react';
 import NextLink from "next/link"
+import Image from 'next/image'
 
 function checkTypeSale({ price, isSale }: { price: number, isSale: { type: string, value: number } }) {
     if (isSale.type === "value") { return isSale.value; }
@@ -10,7 +11,7 @@ function checkTypeSale({ price, isSale }: { price: number, isSale: { type: strin
 }
 
 function ProductAddToCart({ value }: { value: any }) {
-    const { isSale, name, price, slug, _id } = value
+    const { isSale, name, price, slug, _id, image } = value
     return (
         <Box
             bg={useColorModeValue('white', 'gray.800')}
@@ -23,12 +24,24 @@ function ProductAddToCart({ value }: { value: any }) {
                 </Badge>
             )}
 
-            <AspectRatio ratio={3 / 4}>
-                <Image src={'https://yourlimit2-9ede08.ingress-baronn.easywp.com/wp-content/uploads/2021/12/shop-item-1_optimized.webp'} alt={`Picture of ${name}`} rounded="sm" />
-            </AspectRatio>
+           
+                <NextLink
+                    href='/product/[slug]'
+                    as={`/product/${encodeURIComponent(slug)}`}>
+                    <Link>
+                        <Image 
+                        objectFit="cover"
+                        className='hoverImage'
+                        src={image.item} 
+                        alt={`Picture of ${name}`}
+                        width="300px"
+                        height="300px"
+                        layout='intrinsic'
+                         />
+                    </Link>
+                </NextLink>
+           
             <Box pt='3' pb='2'>
-
-
                 <Flex mt="1" justifyContent="space-between" alignContent="center">
                     <NextLink
                         href='/product/[slug]'

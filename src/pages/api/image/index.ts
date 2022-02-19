@@ -1,55 +1,40 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import client from "@/lib/mongodb";
+import apiImage from "@/lib/cloudinary";
+import cloudinary from "cloudinary";
+const clould = cloudinary.v2;
+clould.config({
+  cloud_name: apiImage.cloudName,
+  api_key: apiImage.apiKey,
+  api_secret: apiImage.apiSecret,
+});
 
 const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
   const { body, query, method } = req;
-  const collection = client.ProductModel;
 
   switch (method) {
     case "GET":
-      let page = Number(query.page);
-      let limit = Number(query.limit);
-      if (page || limit) {
-        let skipPage = 0;
-        if (page >= 1) {
-          skipPage = (page - 1) * (limit || 10);
-        }
-
-        delete query.page;
-        delete query.limit;
-        await collection
-          .find(query)
-          .skip(Number(skipPage))
-          .limit(limit || 10)
-          .then(async (values: any) => {
-            await collection.countDocuments().then((total: number) => {
-              res.status(200).json({ result: values, total: total });
-            });
-          });
-      } else {
-        if (query) {
-          await collection.findOne(query).then((values: any) => {
-            res.status(200).json(values);
-          });
-        } else {
-          await collection.find(query).then((values: any) => {
-            res.status(200).json(values);
-          });
-        }
-      }
+      let options = { resource_type: "image", type: "upload", max_results: 25 };
+      await clould.api.resources(options, function (error, result) {
+        if (error) res.status(500).json({err: error});
+        const { resources, next_cursor: nextCursor } = result;
+        res.status(200).json(result);
+      });
       break;
-    case "POST":
-      await collection
-        .create(body)
-        .then((value: any) => {
-          res.status(200).json(value);
-        })
-        .catch((err: any) => console.log(err));
+    case "DELETE":
+      if (body.files) res.status(400).json("Not data");
+      await clould.api.delete_resources(
+        body.files,
+        { resource_type: "image" },
+        function (error, result) {
+          if (error) res.status(500).json({err: error});
+          res.status(200).json(result);
+        }
+      );
       break;
     default:
-      res.setHeader("Allow", ["GET", "POST"]);
+      res.setHeader("Allow", ["GET","DELETE"]);
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 };
 
-export default client.OnConnect(handler);
+export default handler;
