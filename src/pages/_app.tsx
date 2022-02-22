@@ -12,10 +12,11 @@ function MyApp({ Component, pageProps }: AppProps) {
       <CSSReset />
       <Provider store={store}>
         <SWRConfig value={{
+          refreshInterval: 60*60*24,
+          fetcher: (url: RequestInfo) => fetch(url).then((res) => res.json()),
           onError: (error, key) => {
             if (error.status !== 403 && error.status !== 404) {
-              // We can send the error to Sentry,
-              // or show a notification UI.
+              console.log(error)
             }
           }
         }}>

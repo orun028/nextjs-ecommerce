@@ -40,18 +40,37 @@ export default function LargeWithNewsletter() {
     <Box
       bg={useColorModeValue('gray.50', 'gray.900')}
       color={useColorModeValue('gray.700', 'gray.200')}>
-      <Container as={Stack} maxW={'container.xl'} py={10}>
+      <Container as={Stack} maxW={'container.xl'} pt={10}>
         <SimpleGrid
           templateColumns={{ sm: '1fr 1fr', md: '2fr 1fr 1fr 2fr' }}
           spacing={8}>
           <Stack spacing={6}>
             <Box>
               <Logo color={useColorModeValue('gray.700', 'white')} />
+              <Text fontSize={'sm'} mt='2'>
+                NextShop2 nơi bạn tìm kiếm được những phong cách của chính mình. Chúng tôi mang đến các sản phẩm đi theo xu hướng giới trẻ.
+              </Text>
+              <Text fontSize={'sm'} mt='2'>Tối giản, phong cách, mới mẻ, chất liệu mang lại cảm giác thoải mái cho người sử dụng.</Text>
             </Box>
-            <Text fontSize={'sm'}>
-              © 2020 Chakra Templates. All rights reserved
-            </Text>
-            <Stack direction={'row'} spacing={6}>
+          </Stack>
+          <Stack align={'flex-start'}>
+            <ListHeader>Liên kết</ListHeader>
+            <Link href={'#'}>Giới thiệu</Link>
+            <Link href={'#'}>Tin tức</Link>
+            <Link href={'#'}>Liên hệ</Link>
+            <Link href={'#'}>Tuyển dụng</Link>
+            <Link href={'#'}>Đối tác</Link>
+          </Stack>
+          <Stack align={'flex-start'}>
+            <ListHeader>Hổ trợ</ListHeader>
+            <Link href={'#'}>Trung tâm hổ trợ</Link>
+            <Link href={'#'}>Điều khoản dịch vụ</Link>
+            <Link href={'#'}>Chính sách bảo mật</Link>
+            <Link href={'#'}>Vận chuyển</Link>
+            <Link href={'#'}>Liên kết nhà bán hàng</Link>
+          </Stack>
+          <Stack align={'flex-start'}>
+          <Stack direction={'row'} spacing={6} mb='6'>
               <SocialButton label={'Twitter'} href={'#'}>
                 <FaTwitter />
               </SocialButton>
@@ -62,28 +81,10 @@ export default function LargeWithNewsletter() {
                 <FaInstagram />
               </SocialButton>
             </Stack>
-          </Stack>
-          <Stack align={'flex-start'}>
-            <ListHeader>Company</ListHeader>
-            <Link href={'#'}>About us</Link>
-            <Link href={'#'}>Blog</Link>
-            <Link href={'#'}>Contact us</Link>
-            <Link href={'#'}>Pricing</Link>
-            <Link href={'#'}>Testimonials</Link>
-          </Stack>
-          <Stack align={'flex-start'}>
-            <ListHeader>Support</ListHeader>
-            <Link href={'#'}>Help Center</Link>
-            <Link href={'#'}>Terms of Service</Link>
-            <Link href={'#'}>Legal</Link>
-            <Link href={'#'}>Privacy Policy</Link>
-            <Link href={'#'}>Satus</Link>
-          </Stack>
-          <Stack align={'flex-start'}>
-            <ListHeader>Stay up to date</ListHeader>
+            <ListHeader>Nhận các thông tin ưu đãi</ListHeader>
             <Stack direction={'row'}>
               <Input
-                placeholder={'Your email address'}
+                placeholder={'Nhập email của bạn tại đây'}
                 bg={useColorModeValue('blackAlpha.100', 'whiteAlpha.100')}
                 border={0}
                 _focus={{
@@ -102,6 +103,9 @@ export default function LargeWithNewsletter() {
             </Stack>
           </Stack>
         </SimpleGrid>
+        <Text fontSize={'sm'} py='6' mt='6'>
+              Copyright © 2022 NextShop2 - Powered by Ruxx28
+            </Text>
       </Container>
     </Box>
   );

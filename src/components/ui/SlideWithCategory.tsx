@@ -4,6 +4,7 @@ import { BiLeftArrowAlt, BiRightArrowAlt } from "react-icons/bi";
 import { BsChevronRight, BsFillBrightnessAltHighFill, BsList } from "react-icons/bs";
 import Slider from 'react-slick';
 import Hero from "./Hero";
+import NextLink from 'next/link'
 const settings = {
     dots: true,
     arrows: false,
@@ -39,28 +40,13 @@ const SlideWithCategory = () => {
     ];
     const CATE_ITEMS: Array<NavItem> = [
         {
-            label: 'Top sale',
+            label: 'Giảm nhiều nhất',
             href: '#',
         }, {
-            label: 'Popular',
+            label: 'Phổ biến nhất',
             href: '#',
         }, {
-            label: 'Top body',
-            href: '#',
-            children: [
-                {
-                    label: 'Explore Design Work',
-                    subLabel: 'Trending Design to inspire you',
-                    href: '#',
-                },
-                {
-                    label: 'New & Noteworthy',
-                    subLabel: 'Up-and-coming Designers',
-                    href: '#',
-                },
-            ],
-        }, {
-            label: 'Bottom body',
+            label: 'Phần thân trên',
             href: '#',
             children: [
                 {
@@ -75,7 +61,7 @@ const SlideWithCategory = () => {
                 },
             ],
         }, {
-            label: 'Accessory',
+            label: 'Phần thân dưới',
             href: '#',
             children: [
                 {
@@ -90,17 +76,36 @@ const SlideWithCategory = () => {
                 },
             ],
         }, {
-            label: 'Magazine',
+            label: 'Phụ kiện',
+            href: '#',
+            children: [
+                {
+                    label: 'Explore Design Work',
+                    subLabel: 'Trending Design to inspire you',
+                    href: '#',
+                },
+                {
+                    label: 'New & Noteworthy',
+                    subLabel: 'Up-and-coming Designers',
+                    href: '#',
+                },
+            ],
+        }, {
+            label: 'Quà tặng',
             href: '#',
         },
     ];
     return <Grid templateColumns={'repeat(5,1fr)'} gap={2} h={{ base: '600px', md: '400px' }}>
         <GridItem colSpan={{ base: 0, lg: 1 }} display={{ base: 'none', lg: 'block' }}>
             <Stack h={'400'} direction={'column'} /* border='1px' borderColor='gray.300'  */ rounded='md' shadow={'md'} >
-                <Stack direction={'row'} alignItems='center' p='3' fontWeight={500} bg='green.500' color='white' rounded='md' shadow={'md'}>
-                    <Icon as={BsList} />
-                    <Text w={'full'} >  Danh mục sản phẩm </Text>
-                </Stack>
+                <NextLink href={'/product'}>
+                    <Link style={{ textDecoration: 'none' }}>
+                        <Stack direction={'row'} alignItems='center' p='3' fontWeight={500} bg='green.500' color='white' rounded='md' shadow={'md'}>
+                            <Icon as={BsList} />
+                            <Text w={'full'}>  Danh mục sản phẩm </Text>
+                        </Stack>
+                    </Link>
+                </NextLink>
                 <List>
                     {CATE_ITEMS.map((navItem) => (
                         <Box key={navItem.label} >
@@ -158,31 +163,31 @@ const SlideWithCategory = () => {
             </Stack>
         </GridItem>
         <GridItem colSpan={{ base: 5, lg: 4 }}>
-            <Grid
+            {/* <Grid
                 h={{ base: '600px', md: '400px'}}
                 templateRows='repeat(2, 1fr)'
                 templateColumns='repeat(8, 1fr)' gap={2} >
-                <GridItem colSpan={{ base: 8, md: 6 }} rowSpan={{ base: 1, md: 2 }}>
-                    <Box
-                        rounded={'md'}
-                        position={'relative'}
-                        height={'400px'}
-                        width={'full'}
-                        overflow={'hidden'}>
-                        {/* CSS files for react-slick */}
-                        <link
-                            rel="stylesheet"
-                            type="text/css"
-                            charSet="UTF-8"
-                            href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css"
-                        />
-                        <link
-                            rel="stylesheet"
-                            type="text/css"
-                            href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css"
-                        />
-                        {/* Left Icon */}
-                        {/* <IconButton
+                <GridItem colSpan={{ base: 8, md: 6 }} rowSpan={{ base: 1, md: 2 }}> */}
+            <Box
+                rounded={'md'}
+                position={'relative'}
+                height={'400px'}
+                width={'full'}
+                overflow={'hidden'}>
+                {/* CSS files for react-slick */}
+                <link
+                    rel="stylesheet"
+                    type="text/css"
+                    charSet="UTF-8"
+                    href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css"
+                />
+                <link
+                    rel="stylesheet"
+                    type="text/css"
+                    href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css"
+                />
+                {/* Left Icon */}
+                {/* <IconButton
                             aria-label="left-arrow"
                             bg="blackAlpha"
                             color='whiteAlpha'
@@ -196,8 +201,8 @@ const SlideWithCategory = () => {
                             onClick={() => slider?.slickPrev()}>
                             <BiLeftArrowAlt />
                         </IconButton> */}
-                        {/* Right Icon */}
-                        {/* <IconButton
+                {/* Right Icon */}
+                {/* <IconButton
                             aria-label="right-arrow"
                             bg="blackAlpha"
                             color='whiteAlpha'
@@ -211,24 +216,24 @@ const SlideWithCategory = () => {
                             onClick={() => slider?.slickNext()}>
                             <BiRightArrowAlt />
                         </IconButton> */}
-                        {/* Slider */}
-                        <Slider {...settings} ref={(slider: any) => setSlider(slider)}>
-                            {cards.map((url, index) => (
-                                <Box
-                                    key={index}
-                                    height={'400px'}
-                                    position="relative"
-                                    backgroundPosition="center"
-                                    backgroundRepeat="no-repeat"
-                                    backgroundSize="cover"
-                                    /* backgroundImage={`url(${url})`} */
-                                >
-                                    <Hero/>
-                                </Box>
-                            ))}
-                        </Slider>
-                    </Box>
-                </GridItem>
+                {/* Slider */}
+                <Slider {...settings} ref={(slider: any) => setSlider(slider)}>
+                    {cards.map((url, index) => (
+                        <Box
+                            key={index}
+                            height={'400px'}
+                            position="relative"
+                            backgroundPosition="center"
+                            backgroundRepeat="no-repeat"
+                            backgroundSize="cover"
+                        /* backgroundImage={`url(${url})`} */
+                        >
+                            <Hero />
+                        </Box>
+                    ))}
+                </Slider>
+            </Box>
+            {/* </GridItem>
                 <GridItem colSpan={{ base: 4, md: 2}}>
                     <Box bg='gray.300' h={{ base: '200px', md: '100%' }} rounded={'md'}>
                     </Box>
@@ -237,7 +242,7 @@ const SlideWithCategory = () => {
                     <Box bg='gray.300' h={{ base: '200px', md: '100%' }} rounded={'md'}>
                     </Box>
                 </GridItem>
-            </Grid>
+            </Grid> */}
         </GridItem>
     </Grid>
 }

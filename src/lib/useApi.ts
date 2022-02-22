@@ -1,24 +1,9 @@
-const api = "http://localhost:3000/api/";
+const next_host = process.env.NEXT_PUBLIC_HOST;
+const next_post = process.env.NEXT_PUBLIC_POST;
+const hostAPi = next_host && next_post ? next_host+':'+next_post+'/api/' : 'http://127.0.0.1:3000';
 
-async function get(url: RequestInfo, headers?: HeadersInit) {
-  const response = await fetch(api + url, {
-    method: "GET",
-    headers: headers,
-  });
-  return await response.json();
+function useApi(endUrl: string){
+  return hostAPi+endUrl
 }
-async function post(url: RequestInfo, data: BodyInit) {
-  const response = await fetch(api + url, {
-    method: "POST",
-    headers: {
-      "Content-type": "application/json",
-    },
-    body: JSON.stringify(data),
-  });
-  const resData = await response.json();
-
-  return resData;
-}
-const useApi = { get, post };
 
 export default useApi;

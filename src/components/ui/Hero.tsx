@@ -72,6 +72,7 @@ export default function CallToActionWithVideo() {
                     />
                     <Box
                         position={'relative'}
+                        bottom={'16'}
                         height={'500px'}
                         rounded={'xl'}
                         boxShadow={'xl'}

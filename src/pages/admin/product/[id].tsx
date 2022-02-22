@@ -2,35 +2,24 @@ import { NextPage } from "next";
 import { Text, Button, Container, FormControl, FormHelperText, FormLabel, Grid, GridItem, Input, Link, Stack, useColorModeValue, Heading, CheckboxGroup, Checkbox, Box, Tabs, TabList, Tab, TabPanels, TabPanel, Divider, Icon, FormErrorMessage, TagLabel, TagCloseButton, Tag, Accordion, AccordionItem, AccordionButton, AccordionPanel, Select, Spinner } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { LayoutAdmin } from "@/components/common";
-import useSWR from 'swr';
-import Image from "next/image";
-import EditorConvertToJSON from "@/components/ui/Editor";
+import { Image, Editor } from '@/components/ui'
 import { BsDash, BsFillCalendarCheckFill, BsFillCalendarFill, BsFillEyeFill, BsPlus } from "react-icons/bs";
 import { Controller, useForm } from "react-hook-form";
 import { useState } from "react";
 import { convertToRaw } from "draft-js";
+import { FormData } from './product.model'
+import useSWR from 'swr';
+import { formatDate } from '../../../utils/formatValue'
 
-type FormData = {
-    status: string;
-    name: string;
-    price: number;
-    isSale: {};
-    categorys: any[];
-    tags: any[];
-    description: any;
-    shortDescription: any;
-};
-
-const fetcher = (url: RequestInfo) => fetch(url).then(r => r.json())
 const Action: NextPage = () => {
     const router = useRouter()
-    const host = process.env.NEXT_PUBLIC_HOST;
+    const host = `${process.env.NEXT_PUBLIC_HOST}:${process.env.NEXT_PUBLIC_POST}`;
     const { id } = router.query
-    const { data: product } = useSWR(id ? `/api/product/${id}` : null, fetcher)
-    const { data: category } = useSWR('/api/product/category', fetcher)
-    const bgColor = useColorModeValue('gray.50', 'whiteAlpha.50');
+    const { data: product } = useSWR(id ? `/api/product/${id}` : null)
+    const { data: category } = useSWR('/api/product/category')
     const { register, control, setValue, getValues, watch, handleSubmit, formState: { errors } } = useForm<FormData>();
     const [ojb, setOjb] = useState({ item1: '', item2: '' })
+    
     function onSubmit(values: any) {
         return new Promise<void>((resolve) => {
             setTimeout(() => {
@@ -41,7 +30,7 @@ const Action: NextPage = () => {
     }
 
     return <LayoutAdmin>
-        <Container maxW={'container.xl'} py='1' bgColor={bgColor}>
+        <Container maxW={'container.xl'} py='1'>
             <Stack direction={'row'} mb='4'>
                 <Heading size={'xl'}>Edit product</Heading>
                 <Button onClick={() => console.log(product)}>Click</Button>
@@ -72,7 +61,7 @@ const Action: NextPage = () => {
                                 direction={'column'}
                                 rounded='md'>
                                 <Heading size={'xs'} mb='1'>SHORT DESCRIPTION</Heading>
-                                <EditorConvertToJSON onEditorStateChange={(e: any) => console.log(JSON.stringify(convertToRaw(e.getCurrentContent()), null, 4))} />
+                                <Editor onEditorStateChange={(e: any) => setValue('shortDescription',convertToRaw(e.getCurrentContent()))} />
                             </Stack>
                             <Stack p={2}
                                 spacing={1}
@@ -126,7 +115,7 @@ const Action: NextPage = () => {
                                 direction={'column'}
                                 rounded='md'>
                                 <Heading size={'xs'} mb='1'>DESCRIPTION</Heading>
-                                <EditorConvertToJSON onChange={(e: any) => console.log(e)} />
+                                <Editor onChange={(e: any) => setValue('description',convertToRaw(e.getCurrentContent()))} />
                             </Stack>
                         </Stack>
                     </GridItem>
@@ -150,11 +139,11 @@ const Action: NextPage = () => {
                                 </Stack>
                                 <Stack direction={'row'} alignItems='center'>
                                     <Icon as={BsFillCalendarFill} />
-                                    <Text>CreatedAt: {new Date(product.createdAt).toLocaleString()}</Text>
+                                    <Text>CreatedAt: {formatDate(product.createdAt)}</Text>
                                 </Stack>
                                 <Stack direction={'row'} alignItems='center'>
                                     <Icon as={BsFillCalendarCheckFill} />
-                                    <Text>UpdatedAt: {new Date(product.updatedAt).toLocaleString()}</Text>
+                                    <Text>UpdatedAt: {formatDate(product.updatedAt)}</Text>
                                 </Stack>
                                 <Stack w={'full'} direction={'row'} alignItems='center' justifyContent={'space-between'}>
                                     <Link>Delete</Link>

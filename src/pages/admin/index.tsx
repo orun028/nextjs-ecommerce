@@ -3,12 +3,14 @@ import { Container } from '@chakra-ui/react';
 import { NextPage } from 'next';
 import React from 'react';
 
-const index: NextPage = () => {
-    return <LayoutAdmin>
+const DashboardPage: NextPage = () => {
+    return (<LayoutAdmin>
         <Container maxW={'container.xl'} py={'8'}>
-        
+            123123
         </Container>
-    </LayoutAdmin>;
+    </LayoutAdmin>
+    )
+        ;
 }
 
-export default index;
+export default DashboardPage;

@@ -1,46 +1,47 @@
 import type { NextPage } from 'next'
 import { Container } from '@chakra-ui/react';
-import React from 'react';
 import { Layout, Products } from '@/components/common';
-import useSWR from 'swr'
 import SlideWithCategory from '@/components/ui/SlideWithCategory';
-import ListCategory from '@/components/ui/ListCategory';
-import ListPost from '@/components/common/ListPost';
+import useApi from '@/lib/useApi';
 
-const fetcher = (url: RequestInfo) => fetch(url).then((res) => res.json())
+export async function getStaticProps() {
+  const product = await fetch(useApi('product?page=1&limit=10'))
+  const productVal = await product.json()
+  return {
+    props: {
+      productVal
+    }
+  }
+}
 
-const Home: NextPage = () => {
-  const { data, error } = useSWR('/api/product?page=1&limit=10', fetcher)
-  const { result, total } = data || {result : [], total: 0}
+const HomePage: NextPage = ({ productVal }: any) => {
+  const { result, total } = productVal || { result: [], total: 0 }
 
-  if (error) return <div>Failed to load Product</div>
-  if (!data) return <div>Loading...</div>
+  if (!productVal) return <div>Loading...</div>
 
   return (
     <Layout>
       <Container maxW={'container.xl'} py='8'>
-          <SlideWithCategory/>
+        <SlideWithCategory />
       </Container>
 
       {/* <Container maxW={'container.xl'} py='8'>
           <ListCategory/>
       </Container> */}
 
-      <Container maxW={'container.xl'} py='8'>
+      {/* <Container maxW={'container.xl'} py='8'>
         <Products title="Sản phẩm nổi bật nhất" layout="popular" data={result} />
-      </Container>
-      
+      </Container> */}
+
       <Container maxW={'container.xl'} py='8'>
         <Products title="Sản phẩm mới" layout="popular" data={result} />
       </Container>
 
-      <Container maxW={'container.xl'} py='8'>
-        <ListPost title="Mẹo vặt và công nghệ" layout="popular" data={[]}/>
-      </Container>
-
-      {/* end */}
+      {/* <Container maxW={'container.xl'} py='8'>
+        <ListPost title="Mẹo vặt và công nghệ" layout="popular" data={[]} />
+      </Container> */}
     </Layout>
   )
 }
 
-export default Home;
+export default HomePage;

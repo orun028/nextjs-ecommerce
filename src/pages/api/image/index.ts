@@ -8,31 +8,31 @@ clould.config({
   api_secret: apiImage.apiSecret,
 });
 
-const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
+const handler = (req: NextApiRequest, res: NextApiResponse<any>) => {
   const { body, query, method } = req;
 
   switch (method) {
     case "GET":
       let options = { resource_type: "image", type: "upload", max_results: 25 };
-      await clould.api.resources(options, function (error, result) {
-        if (error) res.status(500).json({err: error});
+      clould.api.resources(options, function (error, result) {
+        if (error) res.status(500).json({ err: error });
         const { resources, next_cursor: nextCursor } = result;
-        res.status(200).json(result);
+        res.status(200).json({ result: resources, nextPage: nextCursor });
       });
       break;
     case "DELETE":
       if (body.files) res.status(400).json("Not data");
-      await clould.api.delete_resources(
+      clould.api.delete_resources(
         body.files,
         { resource_type: "image" },
         function (error, result) {
-          if (error) res.status(500).json({err: error});
+          if (error) res.status(500).json({ err: error });
           res.status(200).json(result);
         }
       );
       break;
     default:
-      res.setHeader("Allow", ["GET","DELETE"]);
+      res.setHeader("Allow", ["GET", "DELETE"]);
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 };

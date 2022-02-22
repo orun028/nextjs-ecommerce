@@ -1,10 +1,7 @@
 import { LayoutAdmin } from '@/components/common';
-import { Box, Button, Container, Text, Link, Stack, useBoolean, useDisclosure, useToast, Flex, Heading, MenuButton, Menu, MenuList, MenuItem, CloseButton, IconButton, Progress, Icon, SimpleGrid } from '@chakra-ui/react';
-import Image from 'next/image';
-import React, { useEffect, useState } from 'react';
-import { ModalCustom } from '@/components/ui';
-import FileUpload from '@/components/ui/FileUpload';
-import { useForm } from 'react-hook-form'
+import { ModalCustom, FileUpload, Image } from '@/components/ui';
+import { Button, Container, Text, Link, Stack, useBoolean, useDisclosure, useToast, Flex, Heading, MenuButton, Menu, MenuList, MenuItem, CloseButton, IconButton, Progress, Icon, SimpleGrid } from '@chakra-ui/react';
+import React, { useState } from 'react';
 import clsx from 'clsx';
 import { NextPage } from 'next';
 import { BsChevronDown, BsLink } from 'react-icons/bs';
@@ -13,15 +10,12 @@ import useSWR from 'swr';
 
 const AdminImage: NextPage = () => {
     const toast = useToast()
-
-    const [images, setImages] = useState([])
+    const { data, error } = useSWR('/api/image')
+    const { result, nextPage } = data ?? { result: undefined, nextPage: '' }
     const [edit, setEdit] = useState<any>()
-    const [load, setLoad] = useState(false)
-
     const { isOpen, onOpen, onClose } = useDisclosure()
-    const [SCheck, setSCheck] = useBoolean()
-    const [checkImg, setCheckImg] = useState<string[]>([])
-    const { register } = useForm<{ file_: FileList }>()
+    const [tick, setTick] = useBoolean()
+    const [listDelete, setListDelete] = useState<string[]>([])
 
     const validateFiles = (value: FileList) => {
         if (value.length < 1) {
@@ -39,7 +33,6 @@ const AdminImage: NextPage = () => {
 
     const onChangeFile = async (value: any) => {
         if (validateFiles(value)) {
-            setLoad(true)
             let fileListAsArray: File[] = Array.from(value.target.files)
             await Promise.all(
                 fileListAsArray.map((file) => {
@@ -60,12 +53,12 @@ const AdminImage: NextPage = () => {
                         filesAfter.push(await val.json())
                     }
                 })
-                filesAfter = filesAfter.reverse()
+                /* filesAfter = filesAfter.reverse()
                 let cloneData: any = images
                 filesAfter.map(item => {
                     cloneData.unshift(item)
                 })
-                setImages(cloneData)
+                setImages(cloneData) */
                 toast({
                     title: `Upload file ${check + '/' + fileListAsArray.length}`,
                     status: (check == fileListAsArray.length ? 'success' : 'error'),
@@ -73,19 +66,18 @@ const AdminImage: NextPage = () => {
                     position: 'bottom-right'
                 })
             }).catch((err) => console.log("err upload", err));
-            setLoad(false)
         }
     }
 
     const handelClickImgae = async (title: string, image: string) => {
-        if (SCheck) {
-            if (!checkImg.find(e => e == title)) {
-                setCheckImg([...checkImg, title])
+        if (tick) {
+            if (!listDelete.find(e => e == title)) {
+                setListDelete([...listDelete, title])
             } else {
-                const clone = checkImg.filter(e => e != title)
-                setCheckImg(clone)
+                const clone = listDelete.filter(e => e != title)
+                setListDelete(clone)
             }
-            return
+            return;
         }
         /* let metadata: any = await firebase.getImage(path)
         setEdit({ link: link, meta: metadata })
@@ -105,20 +97,9 @@ const AdminImage: NextPage = () => {
                 isClosable: true,
                 position: 'bottom-right'
             })
-            setSCheck.off()
+            setTick.off()
         }
     }
-
-    useEffect(() => {
-        async function getData() {
-            const data = await fetch('/api/image')
-                .then(res => {
-                    return res.json()
-                })
-            setImages(data.resources)
-        }
-        getData()
-    }, [])
 
     return <LayoutAdmin>
         <Container maxW={'container.xl'} py='1'>
@@ -129,33 +110,25 @@ const AdminImage: NextPage = () => {
                             Actions
                         </MenuButton>
                         <MenuList>
-                            <MenuItem onClick={() => {
-                                setSCheck.toggle()
-                                setCheckImg([])
-                            }}>Select Images</MenuItem>
+                            <MenuItem onClick={() => { setTick.toggle(); setListDelete([]) }}>Select Images</MenuItem>
                         </MenuList>
                     </Menu>
-                    {SCheck && <Button onClick={() => deleteImages(checkImg)}>Delete</Button>}
-                    {SCheck && <CloseButton onClick={() => setSCheck.off()} />}
+                    {tick && <Button onClick={() => deleteImages(listDelete)}>Delete</Button>}
+                    {tick && <CloseButton onClick={() => setTick.off()} />}
                 </Stack>
                 <Stack justifyContent={'space-between'} direction='row'>
-                    <Flex>
-                        <FileUpload
-                            loader={load}
-                            accept={'image/*'}
-                            multiple
-                            register={register('file_', { validate: validateFiles, onChange: onChangeFile })} />
-                    </Flex>
+                    <FileUpload
+                        accept={'image/*'}
+                        multiple
+                        onChange={onChangeFile} />
                 </Stack>
             </Stack>
-            {!images
-                ? <Text>Loading...</Text>
+            {!result ? <Text>Loading...</Text>
                 : <SimpleGrid columns={{ base: 2, sm: 3, md: 4, lg: 5, xl: 6 }} spacing={2}>
-                    {images && images.map((v: any, i: number) =>
+                    {result && result.map((v: any, i: number) =>
                         <Link className={clsx(
-                            checkImg.length != 0 && checkImg.find(e => e == v.public_id) && 'checkImage',
-                            SCheck && 'selectImage',
-                        )}
+                            listDelete.length != 0 && listDelete.find(e => e == v.public_id) && 'checkImage',
+                            tick && 'selectImage')}
                             key={i} mr='2'
                             textDecoration="none" _hover={{ textDecoration: 'none' }}
                             onClick={() => handelClickImgae(v.public_id, v.image)} >
@@ -169,7 +142,7 @@ const AdminImage: NextPage = () => {
                                     height="150px"
                                     layout='intrinsic' />
                                 <Stack height={'25px'} direction={'row'} alignItems='center'>
-                                    <Icon as={BsLink} onClick={()=>{
+                                    <Icon as={BsLink} onClick={() => {
                                         navigator.clipboard.writeText(v.secure_url)
                                         toast({
                                             title: `Copy link`,
@@ -177,7 +150,7 @@ const AdminImage: NextPage = () => {
                                             isClosable: true,
                                             position: 'bottom-right'
                                         })
-                                    }}/>
+                                    }} />
                                     <Text isTruncated>{v.public_id}</Text>
                                 </Stack>
                             </Stack>
