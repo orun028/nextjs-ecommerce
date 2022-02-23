@@ -8,7 +8,7 @@ import React, { useState } from 'react';
 import useSWR, { SWRConfig } from 'swr';
 
 export async function getStaticProps() {
-  const product = await fetch('http://localhost:3000/api/product?page=1&limit=10')
+  const product = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/product?page=1&limit=10`)
   const productVal = await product.json()
   return {
     props: {

@@ -81,7 +81,7 @@ const ProductPage: NextPage = ({ product }: any) => {
 
 export async function getStaticPaths() {
 
-    const res = await fetch('http://localhost:3000/api/product')
+    const res = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/product`)
     const products = await res.json()
 
     const paths = products.result.map((product: any) => ({
@@ -92,7 +92,7 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }: any) {
-    const res = await fetch(`http://localhost:3000/api/product/${params.id}`)
+    const res = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/product/${params.id}`)
     const product = await res.json()
 
     return { props: { product } }
