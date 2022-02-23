@@ -7,9 +7,18 @@ import { BsDash, BsFillCalendarCheckFill, BsFillCalendarFill, BsFillEyeFill, BsP
 import { Controller, useForm } from "react-hook-form";
 import { useState } from "react";
 import { convertToRaw } from "draft-js";
-import { FormData } from './product.model'
 import useSWR from 'swr';
-import { formatDate } from '../../../utils/formatValue'
+import { formatDate } from '../../../utils/formatValue';
+
+interface FormData {
+    name: string,
+    price: number,
+    tag: any[],
+    category: any[],
+    shortDescription: any,
+    description: any,
+    status: boolean
+}
 
 const Action: NextPage = () => {
     const router = useRouter()
@@ -160,7 +169,7 @@ const Action: NextPage = () => {
                                 <Heading size={'sm'}>CATEGORY</Heading>
                                 <FormControl>
                                     <Controller
-                                        name="categorys"
+                                        name="category"
                                         control={control}
                                         render={({ field: { ref, ...rest } }) => (
                                             <CheckboxGroup {...rest}>
@@ -215,18 +224,18 @@ const Action: NextPage = () => {
                                 <Stack direction={'row'}>
                                     <Input value={ojb.item2} onChange={(e) => setOjb(prev => ({ ...prev, item2: e.target.value }))} />
                                     <Button onClick={() => {
-                                        if (!watch('tags')) {
-                                            setValue('tags', [ojb.item2])
+                                        if (!watch('tag')) {
+                                            setValue('tag', [ojb.item2])
                                         } else {
-                                            if (!watch('tags').includes(ojb.item2)) {
-                                                setValue('tags', [...getValues('tags'), ojb.item2])
+                                            if (!watch('tag').includes(ojb.item2)) {
+                                                setValue('tag', [...getValues('tag'), ojb.item2])
                                             }
                                         }
                                         setOjb(prev=>({...prev, item2: ''}))
                                     }}>Add</Button>
                                 </Stack>
                                 <Stack direction={'row'}>
-                                    {watch('tags') && watch('tags', []).map(e => <Tag
+                                    {watch('tag') && watch('tag', []).map(e => <Tag
                                         size={'sm'}
                                         key={e}
                                         borderRadius='full'
@@ -235,11 +244,11 @@ const Action: NextPage = () => {
                                     >
                                         <TagLabel>{e}</TagLabel>
                                         <TagCloseButton onClick={()=>{
-                                            if(watch('tags').length=1){
-                                                if(watch('tags').includes(e))
-                                                return setValue('tags', [])
+                                            if(watch('tag').length=1){
+                                                if(watch('tag').includes(e))
+                                                return setValue('tag', [])
                                             }
-                                            return setValue('tags', [getValues('tags').filter(value=>value!=e)])
+                                            return setValue('tag', [getValues('tag').filter(value=>value!=e)])
                                         }}/>
                                     </Tag>)}
                                 </Stack>
