@@ -1,16 +1,32 @@
-import { Container, Box, Flex, Text, IconButton, Button, Stack, Collapse, Icon, Link, Popover, PopoverTrigger, PopoverContent, useColorModeValue, Badge, PopoverBody, PopoverFooter, Image, ButtonGroup, useDisclosure, calc } from '@chakra-ui/react';
-import { BsList, BsX, BsChevronDown, BsChevronUp, BsPhone, BsPeople, BsPersonCircle } from "react-icons/bs";
+import { Container, Box, Flex, Text, IconButton, Stack, Collapse, Icon, Link, Popover, PopoverTrigger, PopoverContent, useColorModeValue, Badge, PopoverBody, PopoverFooter, Image, ButtonGroup, useDisclosure, calc } from '@chakra-ui/react';
+import { BsList, BsX, BsChevronDown, BsChevronUp, BsPhone, BsPersonCircle } from "react-icons/bs";
 import { FiShoppingBag } from "react-icons/fi";
 import NextLink from "next/link"
 import { useAppSelector } from '@/lib/redux/hook';
 import Logo from './Logo'
 import SearchBar from './SearchBar';
+import { numberToPrice } from '@/utils/formatValue';
 
 export default function WithSubnavigation() {
     const { isOpen, onToggle } = useDisclosure();
     const cart = useAppSelector(state => state.cart)
     const getItemsCount = () => {
         return cart.reduce((accumulator: any, item: { quantity: any; }) => accumulator + item.quantity, 0);
+    };
+    const getTotalCart = () => {
+        const value = cart.reduce((total: any, item: { quantity: number; price: number, isSale: any }) => {
+            if(item.isSale.status){
+                const { type, value } = item.isSale
+                if(type == 'percent'){
+                    return total + (item.quantity*(item.price-value*item.price/100))
+                } else {
+                    return total + (item.quantity*value)
+                }
+            } else {
+                return total + (item.quantity*item.price)
+            }
+        }, 0)
+        return numberToPrice(value);
     };
 
     return (
@@ -37,7 +53,6 @@ export default function WithSubnavigation() {
 
                     <Flex display={{ base: 'none', md: 'flex' }} ml={10}>
                         <SearchBar />
-
                     </Flex>
                 </Flex>
 
@@ -71,7 +86,7 @@ export default function WithSubnavigation() {
                                     fontSize='9px'>
                                     {getItemsCount()}
                                 </Badge>
-                                <Text fontSize='13px' fontWeight='medium'>180,000₫</Text>
+                                <Text fontSize='13px' fontWeight='medium'>{getTotalCart()}</Text>
                             </Stack>
                         </Link>
                     </NextLink>

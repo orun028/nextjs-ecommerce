@@ -28,6 +28,7 @@
     "react-hook-form": "^7.26.1",
     "react-icons": "^4.3.1",
     "react-redux": "^7.2.6",
+    "react-select": "^5.2.2",
     "react-slick": "^0.28.1",
     "swr": "^1.2.1"
   },

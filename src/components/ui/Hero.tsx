@@ -1,20 +1,21 @@
-import { Container, Stack, Flex, Box, Heading, Text, Button, Image, Icon, IconButton, createIcon, IconProps, useColorModeValue, } from '@chakra-ui/react';
+import { Container, Stack, Flex, Box, Heading, Text, Button, Image, Icon, createIcon, IconProps, useColorModeValue, } from '@chakra-ui/react';
 import { BsHeartFill } from 'react-icons/bs';
 import NextLink from 'next/link'
 
 export default function CallToActionWithVideo() {
     return (
-        <Container maxW={'7xl'}>
+        <Container maxW={'container.xl'}>
             <Stack
+                gap={{base: 10, md: 0}}
                 align={'center'}
                 spacing={{ base: 8, md: 10 }}
-                py={{ base: 4, md: 8 }}
+                py={{ base: 12, md: 8 }}
                 direction={{ base: 'column', md: 'row' }}>
                 <Stack flex={1} spacing={{ base: 5, md: 10 }}>
                     <Heading
                         lineHeight={1.1}
                         fontWeight={600}
-                        fontSize={{ base: '3xl', sm: '4xl', lg: '6xl' }} >
+                        fontSize={{ base: '2xl', sm: '4xl', lg: '5xl' }} >
                         <Text as={'span'} position={'relative'}>
                             14 / 2
                             <Flex position={'absolute'} left={40} top={-10} transform={'rotate(20deg)'}>
@@ -27,16 +28,16 @@ export default function CallToActionWithVideo() {
                             Giảm tới 70%
                         </Text>
                     </Heading>
-                    <Text color={'gray.500'}>
+                    <Text color={'gray.500'} fontSize='sm'>
                         Các bạn có đôi có cặp công khai qua mạng xã hội facebook sẽ được ưu đãi giảm 10% cùng phần nhỏ từ nhà tài trợ SHIEN.
                     </Text>
                     <Stack
-                        spacing={{ base: 4, sm: 6 }}
+                        spacing={{ base: 2, sm: 4 }}
                         direction={{ base: 'column', sm: 'row' }}>
                         <NextLink href={'/product'}>
                             <Button
                                 rounded={'full'}
-                                size={'lg'}
+                                size={'md'}
                                 fontWeight={'normal'}
                                 px={6}
                                 colorScheme={'red'}
@@ -47,7 +48,7 @@ export default function CallToActionWithVideo() {
                         </NextLink>
                         <Button
                             rounded={'full'}
-                            size={'lg'}
+                            size={'md'}
                             fontWeight={'normal'}
                             px={6}
                             leftIcon={<PlayIcon h={4} w={4} color={'gray.300'} />}>
@@ -72,8 +73,7 @@ export default function CallToActionWithVideo() {
                     />
                     <Box
                         position={'relative'}
-                        bottom={'16'}
-                        height={'500px'}
+                        height={'400px'}
                         rounded={'xl'}
                         boxShadow={'xl'}
                         width={'auto'}

@@ -95,9 +95,9 @@ const SlideWithCategory = () => {
             href: '#',
         },
     ];
-    return <Grid templateColumns={'repeat(5,1fr)'} gap={2} h={{ base: '600px', md: '400px' }}>
+    return <Grid templateColumns={'repeat(5,1fr)'} gap={2} h={{ base: 'full', md: '500px', lg: '400px' }}>
         <GridItem colSpan={{ base: 0, lg: 1 }} display={{ base: 'none', lg: 'block' }}>
-            <Stack h={'400'} direction={'column'} /* border='1px' borderColor='gray.300'  */ rounded='md' shadow={'md'} >
+            <Stack h={'400px'} direction={'column'} /* border='1px' borderColor='gray.300'  */ rounded='md' shadow={'md'} >
                 <NextLink href={'/product'}>
                     <Link style={{ textDecoration: 'none' }}>
                         <Stack direction={'row'} alignItems='center' p='3' fontWeight={500} bg='green.500' color='white' rounded='md' shadow={'md'}>
@@ -171,7 +171,7 @@ const SlideWithCategory = () => {
             <Box
                 rounded={'md'}
                 position={'relative'}
-                height={'400px'}
+                height={{base: 'full', md:'500px', lg: '400px'}}
                 width={'full'}
                 overflow={'hidden'}>
                 {/* CSS files for react-slick */}
@@ -221,7 +221,7 @@ const SlideWithCategory = () => {
                     {cards.map((url, index) => (
                         <Box
                             key={index}
-                            height={'400px'}
+                            height={{base: 'full', md: '500px', lg: '400px'}}
                             position="relative"
                             backgroundPosition="center"
                             backgroundRepeat="no-repeat"

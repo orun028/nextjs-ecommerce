@@ -23,11 +23,9 @@ function ProductAddToCart({ value }: { value: any }) {
                     Sale!
                 </Badge>
             )}
-
-           
                 <NextLink
-                    href='/product/[slug]'
-                    as={`/product/${encodeURIComponent(slug)}`}>
+                    href='/product/[id]'
+                    as={`/product/${encodeURIComponent(_id)}`}>
                     <Link>
                         <Image 
                         objectFit="cover"
@@ -40,17 +38,15 @@ function ProductAddToCart({ value }: { value: any }) {
                          />
                     </Link>
                 </NextLink>
-           
             <Box pt='3' pb='2'>
                 <Flex mt="1" justifyContent="space-between" alignContent="center">
                     <NextLink
-                        href='/product/[slug]'
-                        as={`/product/${encodeURIComponent(slug)}`}
+                        href='/product/[id]'
+                        as={`/product/${encodeURIComponent(_id)}`}
                     >
                         <Text as={Link} noOfLines={[1, 2, 3]}>{name}</Text>
                     </NextLink>
                 </Flex>
-
                 <Flex justifyContent="start" gap='10px' alignItems='end' mt='5px'>
                     <Box fontSize="18px" fontWeight='semibold' color={useColorModeValue('gray.800', 'white')}>
                         {String(isSale.status ? checkTypeSale({ price, isSale }) : price).replace(/(.)(?=(\d{3})+$)/g, '$1,')}
@@ -61,7 +57,6 @@ function ProductAddToCart({ value }: { value: any }) {
                         <Box as="span">₫</Box>
                     </Text> : ''}
                 </Flex>
-
                 <Rating rating={4.2} numReviews={34} />
                 {/* <Button>Thêm vào giở hàng</Button> */}
             </Box>
