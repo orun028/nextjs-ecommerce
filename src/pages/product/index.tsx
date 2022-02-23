@@ -2,14 +2,13 @@ import { Products } from '@/components/common';
 import Layout from '@/components/common/Layout';
 import BreadcrumbCustom from '@/components/common/Layout/BreadcrumbCustom';
 import { Pagination } from '@/components/ui';
-import useApi from '@/lib/useApi';
-import { Text, Center, Checkbox, CheckboxGroup, Container, Grid, GridItem, Heading, Input, Slider, SliderFilledTrack, SliderThumb, SliderTrack, Stack, FormControl, FormLabel, Button } from '@chakra-ui/react';
+import { Center, Checkbox, CheckboxGroup, Container, Grid, GridItem, Heading, Input, Slider, SliderFilledTrack, SliderThumb, SliderTrack, Stack, FormControl, FormLabel, Button } from '@chakra-ui/react';
 import { NextPage } from 'next';
 import React, { useState } from 'react';
 import useSWR, { SWRConfig } from 'swr';
 
 export async function getStaticProps() {
-  const product = await fetch(useApi('product?page=1&limit=10'))
+  const product = await fetch('http://localhost:3000/api/product?page=1&limit=10')
   const productVal = await product.json()
   return {
     props: {

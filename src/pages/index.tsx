@@ -2,10 +2,9 @@ import type { NextPage } from 'next'
 import { Container } from '@chakra-ui/react';
 import { Layout, Products } from '@/components/common';
 import SlideWithCategory from '@/components/ui/SlideWithCategory';
-import useApi from '@/lib/useApi';
 
 export async function getStaticProps() {
-  const product = await fetch(useApi('product?page=1&limit=10'))
+  const product = await fetch('http://localhost:3000/api/product?page=1&limit=10')
   const productVal = await product.json()
   return {
     props: {

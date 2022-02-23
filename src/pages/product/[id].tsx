@@ -1,12 +1,10 @@
 import React from 'react';
 import { NextPage } from 'next';
-import { Container, Flex, Heading, SimpleGrid, Stack, Text, Box, Button, Badge, GridItem, Grid } from '@chakra-ui/react';
+import { Container, Flex, Heading, Stack, Text, Box, Button, Badge, GridItem, Grid } from '@chakra-ui/react';
 import { Layout, BreadcrumbCustom } from '@/components/common';
 import { RadioCard, Rating, Image } from '@/components/ui';
-import { BsFillHeartFill } from 'react-icons/bs';
 import { addToCart } from '@/lib/redux/slice/cart';
 import { useAppDispatch } from '@/lib/redux';
-import useApi from '@/lib/useApi';
 
 function checkTypeSale({ price, isSale }: { price: number, isSale: { type: string, value: number } }) {
     if (isSale.type === "value") { return isSale.value; }
@@ -83,7 +81,7 @@ const ProductPage: NextPage = ({ product }: any) => {
 
 export async function getStaticPaths() {
 
-    const res = await fetch(useApi('product'))
+    const res = await fetch('http://localhost:3000/api/product')
     const products = await res.json()
 
     const paths = products.result.map((product: any) => ({
@@ -94,7 +92,7 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }: any) {
-    const res = await fetch(useApi(`product/${params.id}`))
+    const res = await fetch(`http://localhost:3000/api/product/${params.id}`)
     const product = await res.json()
 
     return { props: { product } }

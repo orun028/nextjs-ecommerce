@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import { ParsedUrlQuery } from 'querystring';
 import React from 'react';
 import { BsHouse } from 'react-icons/bs';
+import NextLink from 'next/link'
 
 const _defaultGetTextGenerator = (param: String, query: ParsedUrlQuery) => null;
 const _defaultGetDefaultTextGenerator = (path: String) => path;
@@ -34,11 +35,16 @@ export default function BreadcrumbCustom({ getTextGenerator = _defaultGetTextGen
     return (
         <Breadcrumb>
             <BreadcrumbItem key={100}>
-                <BreadcrumbLink href='/'><Icon as={BsHouse} /></BreadcrumbLink>
+                <NextLink href='/'>
+                    <BreadcrumbLink ><Icon as={BsHouse} /></BreadcrumbLink>
+                </NextLink>
+
             </BreadcrumbItem>
             {breadcrumbs.map((crumb, idx) => (
                 <BreadcrumbItem key={idx} isCurrentPage={idx === breadcrumbs.length - 1}>
-                    <BreadcrumbLink href={crumb.href}>{crumb.text}</BreadcrumbLink>
+                    <NextLink href={crumb.href}>
+                        <BreadcrumbLink href={crumb.href}>{crumb.text}</BreadcrumbLink>
+                    </NextLink>
                 </BreadcrumbItem>
             ))}
         </Breadcrumb>

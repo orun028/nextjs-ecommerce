@@ -14,26 +14,17 @@ const Select = dynamic<Props>(() => import('react-select').then((mod) => mod.def
 
 const SingleSelect = (props: SelectProps) => {
     const { options, defaultValue, clear, muti, loading } = props
-    const [values, setValues] = useState<any[]>([])
-    useEffect(() => {
-        function setData() {
-            const clone: any[] = []
-            options.map(e => {
-                clone.push([...clone,{ value: e.name, lable: e.name }])
-            })
-            
-            setValues(clone)
-        }
-        setData()
-    }, [])
-    
+    function setData() {
+        return options.map(e => ({ value: e.name, lable: e.name }))
+    }
+
     return (
         <Select
             isClearable={clear}
             isLoading={loading}
             defaultValue={defaultValue}
             isMulti={muti}
-            options={values}
+            options={setData()}
         />
     );
 }
