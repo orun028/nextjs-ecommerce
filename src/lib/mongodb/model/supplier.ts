@@ -1,7 +1,6 @@
-import Mongoose from "mongoose";
-import Product from "./product";
+import { model, Schema, models } from "mongoose";
 
-const SupplierSchema = new Mongoose.Schema({ 
+const SupplierSchema = new Schema({ 
     name: {type: String, require: true},
     url: {type: String, required: false},
     address: [{
@@ -10,11 +9,7 @@ const SupplierSchema = new Mongoose.Schema({
         city: String
     }],
     des: {type: String, required: false},
-    products: {type: [Mongoose.Schema.Types.ObjectId], ref: Product},
+    products: {type: [Schema.Types.ObjectId], ref: 'Product'},
 }, { timestamps: true});
 
-if (process.env.NODE_ENV==='development') {
-	delete Mongoose.connection.models['Supplier'];
-}
-
-export default Mongoose.model("Supplier", SupplierSchema);
+export default models.supplier || model("supplier", SupplierSchema);

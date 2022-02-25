@@ -1,7 +1,6 @@
-import { model, Schema, connection, Model, models } from "mongoose";
+import { model, Schema, models } from "mongoose";
 
-const Product = new Schema(
-  {
+const Product = new Schema({
     sku: { type: String, default: "" },
     status: { type: String, default: "published", } /* 'published'||'not released' */,
     slug: { type: String },
@@ -32,8 +31,6 @@ const Product = new Schema(
       required: false,
     },
     supplier: { type: [Schema.Types.ObjectId], ref: "Supplier", required: false},
-  },
-  { timestamps: true }
-);
+}, { timestamps: true });
 
 export default models.product || model("product", Product);
