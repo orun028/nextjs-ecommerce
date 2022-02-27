@@ -1,7 +1,7 @@
 import { model, Schema, models } from "mongoose";
 
 const UserSchema = new Schema({
-    name: { type: String, require: true },
+    name: { type: String, required: true },
     email: { type: String, lowercase: true, required: true, index: { unique: true }, maxlength: 20 },
     password: { type: String, default: null, maxlength: 30 },
     phone: { type: String, required: false, index: { unique: true, sparse: true }, maxlength: 10 },
@@ -11,9 +11,9 @@ const UserSchema = new Schema({
         road: String,
         district: String,
         city: String
-    }, {require: true} ],
+    }, {required: true} ],
     addressActive: { type: Schema.Types.ObjectId },
-    role: { type: Schema.Types.ObjectId, ref: 'Role' },
+    role: { type: Schema.Types.ObjectId, ref: 'role' },
 }, { timestamps: true });
 
 

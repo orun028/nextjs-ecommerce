@@ -6,6 +6,12 @@ import { LayoutAdmin } from '@/components/common';
 import NextLink from 'next/link'
 import useSWR from 'swr';
 
+function checkTypeSale({ price, isSale }: { price: number, isSale: { type: string, value: number } }) {
+    if (isSale.type === "value") return isSale.value;
+    if (isSale.type === "percent") return (price - (price * isSale.value / 100));
+    return 0;
+}
+
 const ProductPage: NextPage = () => {
     const [page, setPage] = useState(1)
     const { data, error } = useSWR(`/api/product?page=${page}&limit=10`)
@@ -15,12 +21,6 @@ const ProductPage: NextPage = () => {
     const allChecked = checkedItems.every(Boolean)
     const isIndeterminate = checkedItems.some(Boolean) && !allChecked
 
-    function checkTypeSale(v: any) {
-        if (v.isSale.type === "value") { return v.isSale.value; }
-        if (v.isSale.type === "percent") {
-            return (v.price - (v.price * v.isSale.value / 100))
-        }
-    }
     const actionDelete = () => {
         var result = confirm("Want to delete?");
         if (result) {

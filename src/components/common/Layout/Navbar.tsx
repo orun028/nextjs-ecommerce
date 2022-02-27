@@ -6,36 +6,21 @@ import { useAppSelector } from '@/lib/redux/hook';
 import Logo from './Logo'
 import SearchBar from './SearchBar';
 import { numberToPrice } from '@/utils/formatValue';
+import { getTotalPrice } from '@/utils/cart';
+import { NLink } from '@/components/ui';
+import clsx from 'clsx';
+import { useRouter } from 'next/router';
 
 export default function WithSubnavigation() {
     const { isOpen, onToggle } = useDisclosure();
     const cart = useAppSelector(state => state.cart)
     const getItemsCount = () => {
-        return cart.reduce((accumulator: any, item: { quantity: any; }) => accumulator + item.quantity, 0);
+        return cart.reduce((accumulator: number, item: { quantity: number; }) => accumulator + item.quantity, 0);
     };
-    const getTotalCart = () => {
-        const value = cart.reduce((total: any, item: { quantity: number; price: number, isSale: any }) => {
-            if(item.isSale.status){
-                const { type, value } = item.isSale
-                if(type == 'percent'){
-                    return total + (item.quantity*(item.price-value*item.price/100))
-                } else {
-                    return total + (item.quantity*value)
-                }
-            } else {
-                return total + (item.quantity*item.price)
-            }
-        }, 0)
-        return numberToPrice(value);
-    };
+    const TotalCart = numberToPrice(getTotalPrice(cart))
 
     return (
-        <Box
-            borderBottom={1}
-            borderStyle={'solid'}
-            borderColor={'gray.200'}
-            bg={'white'}
-            shadow='sm'>
+        <Box borderBottom={1} borderStyle={'solid'} borderColor={'gray.200'} bg={'white'} shadow='sm'>
             <Container
                 as={Flex}
                 maxW={'container.xl'}
@@ -44,13 +29,8 @@ export default function WithSubnavigation() {
                 py={{ base: 2 }}
                 px={{ base: 4 }}
                 align={'center'}>
-                <NextLink href={'/'}>
-                    <Link>
-                    <Logo w='16.66666666666667%' />
-                    </Link>
-                </NextLink>
+                <NLink href={'/'}> <Logo w='16.66666666666667%' /> </NLink>
                 <Flex flex={{ base: 1 }} justify={{ base: 'start' }}>
-
                     <Flex display={{ base: 'none', md: 'flex' }} ml={10}>
                         <SearchBar />
                     </Flex>
@@ -60,47 +40,41 @@ export default function WithSubnavigation() {
                     direction={'row'}
                     spacing={6} alignItems='center'>
                     <Stack direction={'row'} spacing={6} alignItems='center' display={{ base: 'none', md: 'flex' }}>
-                        <Stack spacing={'1'} direction={'row'} display={{ base: 'none', lg: 'flex' }}>
-                            <Icon as={BsPhone} fontSize='xl' />
-                            <Text fontSize={'sm'}> 0123 123 132 </Text>
-                        </Stack>
+                        <DesktopNav />
                         <Stack spacing={'1'} direction={'row'}>
                             <Icon as={BsPersonCircle} fontSize='xl' />
                             <Link as={'a'} fontSize={'sm'} fontWeight={400}> Tài khoản </Link>
                         </Stack>
                     </Stack>
-
-
-                    <NextLink href='/cart'>
-                        <Link>
-                            <Stack as={Box} direction={'row'} spacing={2} position='relative'>
-                                <Icon as={FiShoppingBag} w={'5'} h={'5'} />
-                                <Badge
-                                    px='1.5' py='1px'
-                                    rounded='full'
-                                    position="absolute"
-                                    top={-1.5}
-                                    left={1}
-                                    variant='solid'
-                                    colorScheme='green'
-                                    fontSize='9px'>
-                                    {getItemsCount()}
-                                </Badge>
-                                <Text fontSize='13px' fontWeight='medium'>{getTotalCart()}</Text>
-                            </Stack>
-                        </Link>
-                    </NextLink>
+                    <NLink href='/cart'>
+                        <Stack as={Box} direction={'row'} spacing={2} position='relative'>
+                            <Icon as={FiShoppingBag} w={'5'} h={'5'} />
+                            <Badge
+                                px='1.5' py='1px'
+                                rounded='full'
+                                position="absolute"
+                                top={-1.5}
+                                left={1}
+                                variant='solid'
+                                colorScheme='green'
+                                fontSize='9px'>
+                                {getItemsCount()}
+                            </Badge>
+                            <Text fontSize='13px' fontWeight='medium'>{TotalCart}</Text>
+                        </Stack>
+                    </NLink>
                 </Stack>
                 <Flex
                     display={{ base: 'flex', md: 'none' }}>
                     <IconButton
                         onClick={onToggle}
                         icon={
-                            isOpen ? <Icon as={BsX} w={10} h={10} /> : <Icon as={BsList} w={5} h={5} />
+                            isOpen
+                                ? <Icon as={BsX} w={10} h={10} />
+                                : <Icon as={BsList} w={5} h={5} />
                         }
                         variant={'ghost'}
-                        aria-label={'Toggle Navigation'}
-                    />
+                        aria-label={'Toggle Navigation'}/>
                 </Flex>
             </Container>
             <Collapse in={isOpen} animateOpacity>
@@ -111,6 +85,7 @@ export default function WithSubnavigation() {
 }
 
 const DesktopNav = () => {
+    const router = useRouter()
     return (
         <Stack direction={'row'} spacing={4}>
             {NAV_ITEMS.map((navItem) => (
@@ -120,14 +95,12 @@ const DesktopNav = () => {
                             <Box role='button'>
                                 <NextLink href={navItem.href ?? '#'}>
                                     <Link
+                                        className={clsx(router.pathname == navItem.href && 'desktopNav-active')}
                                         p={2}
                                         fontSize={'sm'}
                                         fontWeight={500}
                                         color={'gray.600'}
-                                        _hover={{
-                                            textDecoration: 'none',
-                                            color: 'gray.800',
-                                        }}>
+                                        _hover={{ textDecoration: 'none', color: 'gray.800', }}>
                                         {navItem.label}
                                     </Link>
                                 </NextLink>

@@ -29,6 +29,10 @@
     color: white !important;
 }
 
+.desktopNav-active{
+    color: #38A169 !important;
+}
+
 .wrapperEditor{
     display: block !important;
     flex-direction: column;

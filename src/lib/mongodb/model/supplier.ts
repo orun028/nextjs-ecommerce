@@ -1,7 +1,7 @@
 import { model, Schema, models } from "mongoose";
 
 const SupplierSchema = new Schema({ 
-    name: {type: String, require: true},
+    name: {type: String, required: true},
     url: {type: String, required: false},
     address: [{
         road: String,
