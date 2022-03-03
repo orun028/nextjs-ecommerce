@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 import { IconButton, Box, CloseButton, Flex, Icon, useColorModeValue, Link, Drawer, DrawerContent, Text, useDisclosure, BoxProps, FlexProps, Stack, Menu, MenuButton, MenuList, MenuItem, Button, MenuGroup, MenuDivider, MenuItemOption, MenuOptionGroup, DrawerOverlay, Spacer, Slide, } from '@chakra-ui/react';
-import { FiHome, FiTrendingUp, FiCompass, FiStar, FiSettings, FiMenu, FiImage, FiTrello, FiUsers, FiShoppingBag, } from 'react-icons/fi';
+import { FiHome, FiBox, FiTrendingUp, FiCompass, FiStar, FiSettings, FiMenu, FiImage, FiTrello, FiUsers, FiShoppingBag, } from 'react-icons/fi';
 import { IconType } from 'react-icons';
 import { ReactText } from 'react';
 import { BsChevronExpand } from 'react-icons/bs';
@@ -28,6 +28,7 @@ const LinkItems: Array<LinkItemProps> = [
     {
         name: 'YOUR TAB', type: 'group', children: [
             { name: 'Product', type: 'item', icon: FiShoppingBag, link: '/admin/product' },
+            { name: 'Order', type: 'item', icon: FiBox, link: '/admin/order' },
             { name: 'User', type: 'item', icon: FiUsers, link: '/admin/user' },
             { name: 'Post', type: 'item', icon: FiTrello, link: '/admin/post' },
             { name: 'Image', type: 'item', icon: FiImage, link: '/admin/image' },

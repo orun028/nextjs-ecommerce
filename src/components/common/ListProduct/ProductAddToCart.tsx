@@ -11,7 +11,7 @@ function checkTypeSale({ price, isSale }: { price: number, isSale: { type: strin
 }
 
 function ProductAddToCart({ value }: { value: any }) {
-    const { isSale, name, price, _id, image } = value
+    const { isSale, name, price, _id, image, slug } = value
     return (
         <Box
             bg={useColorModeValue('white', 'gray.800')}
@@ -23,7 +23,7 @@ function ProductAddToCart({ value }: { value: any }) {
                     Sale!
                 </Badge>
             )}
-            <NextLink href='/product/[id]' as={`/product/${encodeURIComponent(_id)}`}>
+            <NextLink href='/product/[slug]' as={`/product/${encodeURIComponent(slug)}`}>
                 <Link>
                     <Image
                         objectFit="cover"
@@ -37,7 +37,7 @@ function ProductAddToCart({ value }: { value: any }) {
             </NextLink>
             <Box pt='3' pb='2'>
                 <Flex mt="1" justifyContent="space-between" alignContent="center">
-                    <NextLink href='/product/[id]' as={`/product/${encodeURIComponent(_id)}`} >
+                    <NextLink href='/product/[slug]' as={`/product/${encodeURIComponent(slug)}`} >
                         <Text as={Link} noOfLines={[1, 2, 3]}>{name}</Text>
                     </NextLink>
                 </Flex>

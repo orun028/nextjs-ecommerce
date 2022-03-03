@@ -1,8 +1,8 @@
 import { Container, Box, Flex, Text, IconButton, Stack, Collapse, Icon, Link, Popover, PopoverTrigger, PopoverContent, useColorModeValue, Badge, PopoverBody, PopoverFooter, Image, ButtonGroup, useDisclosure, calc } from '@chakra-ui/react';
-import { BsList, BsX, BsChevronDown, BsChevronUp, BsPhone, BsPersonCircle } from "react-icons/bs";
+import { BsList, BsX, BsChevronDown, BsChevronUp, BsPersonCircle } from "react-icons/bs";
 import { FiShoppingBag } from "react-icons/fi";
 import NextLink from "next/link"
-import { useAppSelector } from '@/lib/redux/hook';
+import { useAppSelector } from '@/hook/redux';
 import Logo from './Logo'
 import SearchBar from './SearchBar';
 import { numberToPrice } from '@/utils/formatValue';

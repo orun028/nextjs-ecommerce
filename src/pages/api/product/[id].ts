@@ -1,26 +1,20 @@
+import { delProduct, getProduct, upProduct } from '@/lib/mongodb/controller/product';
 import type { NextApiRequest, NextApiResponse } from "next";
 import client from "@/lib/mongodb";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
   const { query, method, body, } = req;
-  const { id } = query;
-  const collection = client.ProductModel;
-
+  const { id: _id } = query;
+  
   switch (method) {
     case "GET":
-      await collection.findOne({ _id: id })
-      .then((value) => {
-        res.status(200).json(value);
-      })
-      .catch((err: any) => console.log(err));
+      res.status(200).json(await getProduct({_id}))
       break;
     case "PUT":
-      await collection.findOneAndUpdate({ _id: id }, body).then((value) => {
-        res.status(200).json(value);
-      });
+      res.status(200).json(await upProduct({_id}, body))
       break;
     case "DELETE":
-      await collection.deleteOne({ _id: id }).then(() => res.status(204).json({}));
+      res.status(200).json(await delProduct({_id}))
       break;
     default:
       res.setHeader("Allow", ["GET", "PUT", "DELETE"]);

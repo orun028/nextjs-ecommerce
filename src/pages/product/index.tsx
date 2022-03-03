@@ -1,4 +1,4 @@
-import { Fillter, ListProduct, Layout, BreadcrumbCustom } from '@/components/common';
+import { Fillter, ListProduct, Layout } from '@/components/common';
 import { Pagination } from '@/components/ui';
 import { Center, Container, Grid, GridItem } from '@chakra-ui/react';
 import { NextPage } from 'next';
@@ -7,7 +7,7 @@ import useSWR from 'swr';
 
 export async function getStaticProps() {
   const product = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/product?page=1&limit=8`)
-  const productVal = await product.json()
+  const productVal = product.ok ? await product.json() : null
   return { props: { productVal } }
 }
 
@@ -22,9 +22,8 @@ const ShopPage: NextPage = ({ productVal }: any) => {
 
   return (
     <Layout>
-      <Container maxW='container.xl' py='8'>
-        <BreadcrumbCustom getDefaultTextGenerator={() => 'Sản phẩm'} />
-        {error ? <div>Failed to load Product</div>
+      <Container maxW='container.xl' py='8' minH={'400px'}>
+        {error ? <p>Failed to load Product</p>
           : <Grid templateColumns='repeat(7, 1fr)' gap={8}>
             <GridItem colSpan={5}>
               {!data ? <p>Loading Please wait...</p> :
@@ -34,7 +33,7 @@ const ShopPage: NextPage = ({ productVal }: any) => {
                 <Pagination currentPage={page} lastPage={lastPage} handlePageClick={(e: number) => setPage(e)} />
               </Center>
             </GridItem>
-            <GridItem colSpan={2} pt='2'>
+            <GridItem colSpan={2}>
               <Fillter />
             </GridItem>
           </Grid>}

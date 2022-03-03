@@ -2,7 +2,7 @@ import { Heading, FormControl, Input, FormLabel, CheckboxGroup, Stack, Checkbox,
 
 const Fillter = () => {
   return (<>
-    <Heading fontSize={"md"} py="2">
+    <Heading fontSize={"lg"} pb="2">
       Tìm kiếm
     </Heading>
     <form>

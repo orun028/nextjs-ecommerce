@@ -19,6 +19,7 @@
     "clsx": "^1.1.1",
     "draft-js": "^0.11.7",
     "draftjs-to-html": "^0.9.1",
+    "firebase": "^9.6.7",
     "framer-motion": "5",
     "mongoose": "^6.1.9",
     "next": "12",
@@ -30,6 +31,7 @@
     "react-redux": "^7.2.6",
     "react-select": "^5.2.2",
     "react-slick": "^0.28.1",
+    "redux-persist": "^6.0.0",
     "swr": "^1.2.1"
   },
   "devDependencies": {

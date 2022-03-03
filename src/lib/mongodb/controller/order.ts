@@ -1,9 +1,9 @@
 import { ParsedUrlQuery } from 'querystring';
 import client from "@/lib/mongodb";
 import { UpdateQuery } from 'mongoose';
-const collection = client.ProductModel;
+const collection = client.OrderModel;
 
-export async function getAllProduct( page: number, limit: number, query?: { [key: string]: string | string[] } ) {
+export async function getAllOrder( page: number, limit: number, query?: { [key: string]: string | string[] } ) {
   const total = await collection.countDocuments();
   if (page || limit) {
     let skipPage = 0;
@@ -17,18 +17,18 @@ export async function getAllProduct( page: number, limit: number, query?: { [key
   }
 }
 
-export async function setProduct(body: any) {
+export async function setOrder(body: any) {
     return await collection.create(body)
 }
 
-export async function getProduct(query: ParsedUrlQuery) {
+export async function getOrder(query: ParsedUrlQuery) {
   return await collection.findOne(query)
 }
 
-export async function upProduct( query: ParsedUrlQuery, update?: UpdateQuery<any> | undefined) {
+export async function upOrder( query: ParsedUrlQuery, update?: UpdateQuery<any> | undefined) {
   return await collection.findOneAndUpdate(query, update)
 }
 
-export async function delProduct(query: ParsedUrlQuery) {
+export async function delOrder(query: ParsedUrlQuery) {
   return await collection.findOneAndDelete(query)
 }

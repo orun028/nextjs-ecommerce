@@ -1,12 +1,13 @@
-import { Layout, BreadcrumbCustom, } from '@/components/common';
+import { Layout } from '@/components/common';
 import { NLink, IncrementNumber, Image } from '@/components/ui';
 import { numberToPrice } from '@/utils/formatValue'
 import { getTotalPrice, getPriceByItem } from '@/utils/cart'
-import { Box, Container, Heading, List, ListItem, Stack, Text, Button, Divider, GridItem, Flex, Grid, Link, Input } from '@chakra-ui/react';
+import { Box, Container, Heading, List, ListItem, Stack, Text, Button, Divider, GridItem, Flex, Grid, Link, Input, Checkbox, Icon, IconButton } from '@chakra-ui/react';
 import { useState } from 'react';
-import { useAppSelector, useAppDispatch } from '@/lib/redux';
+import { useAppSelector, useAppDispatch } from '@/hook/redux';
 import { incrementQuantity, decrementQuantity, removeFromCart } from '@/lib/redux/slice/cart';
 import { NextPage } from 'next';
+import { FiDelete, FiTrash2 } from 'react-icons/fi';
 
 const CartEmty = () => {
     return (
@@ -42,6 +43,7 @@ const CartEmty = () => {
 }
 
 const CartPage: NextPage = () => {
+    /* const [checkedItems, setCheckedItems] = useState<string[]>([]) */
     const [promo, setPromo] = useState<string>('')
     const [priceSale, setPriceSale] = useState(0)
     const cart = useAppSelector((state) => state.cart)
@@ -51,50 +53,65 @@ const CartPage: NextPage = () => {
     return (
         <Layout>
             <Container maxW={'container.xl'} py='8'>
-                <BreadcrumbCustom getDefaultTextGenerator={() => 'Giỏ hàng'} />
                 {cart.length === 0
-                    ? <CartEmty/>
+                    ? <CartEmty />
                     : <Grid gap='4' templateColumns='repeat(6, 1fr)'>
                         <GridItem as={List} colSpan={{ base: 6, lg: 4 }}>
-                            {cart.map((item: any, i: number) => (
-                                <Stack key={i} as={ListItem} direction='row' p='5' pl='0' justifyContent='space-between' alignItems='start'>
-                                    <Flex gap='3'>
-                                        <Image
-                                            width={'100px'}
-                                            height={'100px'}
-                                            layout='intrinsic'
-                                            src={item.image.item}
-                                            alt={'Cart item ' + item.name} />
-                                        <Flex direction='column'>
-                                            <NLink href={`/product/${item._id}`}>{item.name}</NLink>
-                                            <Text color={'gray.500'} fontSize='sm'>Color, size</Text>
-                                            <Text>{numberToPrice(item.price)}</Text>
-                                            <IncrementNumber
-                                                value={item.quantity}
-                                                increment={() => dispatch(incrementQuantity(item._id))}
-                                                decrement={() => dispatch(decrementQuantity(item._id))} />
+                            <Stack direction={'column'}>
+                                {/* <Stack px='1' py='1' direction='row' justifyContent='space-between' bg={'#F7FAFC'} shadow='sm' rounded='sm'>
+                                    <Checkbox isChecked={checkedItems.length == cart.length}
+                                        onChange={() => {
+                                            if (checkedItems.length == cart.length) return setCheckedItems([])
+                                            setCheckedItems(cart.map((item: { name: string }) => item.name))
+                                        }}
+                                        colorScheme='green' />
+                                        <IconButton size={'xs'} aria-label='Del cart' fontSize='16px' icon={<FiTrash2 />} />
+                                </Stack> */}
+                                {cart.map((item: any, i: number) => (
+                                    <Stack key={i} as={ListItem} direction='row' p='2' pl='0' justifyContent='space-between' alignItems='start'>
+                                        <Flex gap='3' position={'relative'}>
+                                            {/* <Checkbox isChecked={checkedItems.includes(item.name)}
+                                                onChange={() => {
+                                                    if (checkedItems.includes(item.name)) return setCheckedItems(checkedItems.filter(e => e != item.name))
+                                                    setCheckedItems([...checkedItems, item.name])
+                                                }}
+                                                colorScheme='green' position={'absolute'} top='1' left='1' zIndex='banner' bg={'white'} rounded='md' /> */}
+                                            <Image
+                                                width={'100px'}
+                                                height={'100px'}
+                                                layout='intrinsic'
+                                                src={item.image.item}
+                                                alt={'Cart item ' + item.name} />
+                                            <Flex direction='column'>
+                                                <NLink href={`/product/${item._id}`}>{item.name}</NLink>
+                                                <Text color={'gray.500'} fontSize='sm'>Color, size</Text>
+                                                <Text>{numberToPrice(item.price)}</Text>
+                                                <IncrementNumber
+                                                    value={item.quantity}
+                                                    increment={() => dispatch(incrementQuantity(item._id))}
+                                                    decrement={() => dispatch(decrementQuantity(item._id))} />
+                                            </Flex>
                                         </Flex>
-                                    </Flex>
-                                    <Flex direction='column' alignItems={'end'}>
-                                        <Text>{numberToPrice(getPriceByItem(item))}</Text>
-                                        <Stack direction='row'>
-                                            <Link onClick={() => dispatch(removeFromCart(item._id))}>Delete</Link>
-                                            <Divider orientation='vertical' colorScheme='gray' />
-                                            <Link>Like</Link>
-                                        </Stack>
-                                    </Flex>
-                                </Stack>
-                            ))}
+                                        <Flex direction='column' alignItems={'end'}>
+                                            <Text>{numberToPrice(getPriceByItem(item))}</Text>
+                                            <Stack direction='row'>
+                                                <Link onClick={() => dispatch(removeFromCart(item._id))}>Delete</Link>
+                                                <Divider orientation='vertical' colorScheme='gray' />
+                                                <Link>Like</Link>
+                                            </Stack>
+                                        </Flex>
+                                    </Stack>
+                                ))}
+                            </Stack>
                         </GridItem>
                         <GridItem colSpan={{ base: 6, md: 6, lg: 2 }}>
                             <Stack direction={{ base: 'column', md: 'row', lg: 'column' }} gap='2' mb='2'>
                                 <Stack gap={1} p='5' w={'full'} bg={'#F7FAFC'} rounded={'md'} >
-                                    <Heading as='h5' fontSize='md'>Mã khuyến mãi:</Heading>
                                     <Stack direction='row' justifyContent='space-between'>
-                                        <Input type='text' value={promo} onChange={(e) => {
+                                        <Input placeholder='Nhập mã khuyễn mãi của bạn' bg={'blackAlpha.100'} type='text' value={promo} onChange={(e) => {
                                             setPromo(e.target.value)
                                         }} />
-                                        <Button onClick={()=>{}}>Lưu</Button>
+                                        <Button onClick={() => { }}>Lưu</Button>
                                     </Stack>
                                 </Stack>
                                 <Stack gap={2} p='5' w={'full'} bg={'#F7FAFC'} rounded={'md'} >
@@ -109,7 +126,7 @@ const CartPage: NextPage = () => {
                                     <Divider colorScheme='gray' />
                                     <Flex justifyContent={'space-between'}>
                                         <Text>Tổng cộng</Text>
-                                        <Text>{numberToPrice(priceSale+AllTotalPrice)}</Text>
+                                        <Text>{numberToPrice(priceSale + AllTotalPrice)}</Text>
                                     </Flex>
                                 </Stack>
                             </Stack>

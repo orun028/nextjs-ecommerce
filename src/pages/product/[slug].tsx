@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { NextPage } from 'next';
 import { Container, Flex, Heading, Stack, Text, Box, Button, Badge, GridItem, Grid } from '@chakra-ui/react';
-import { Layout, BreadcrumbCustom } from '@/components/common';
+import { Layout } from '@/components/common';
 import { RadioCard, Rating, Image } from '@/components/ui';
 import { addToCart } from '@/lib/redux/slice/cart';
-import { useAppDispatch } from '@/lib/redux';
+import { useAppDispatch } from '@/hook/redux';
 import { numberToPrice } from '@/utils/formatValue';
 
 function checkTypeSale({ price, isSale }: { price: number, isSale: { type: string, value: number } }) {
@@ -23,9 +23,9 @@ const ProductPage: NextPage = ({ product }: any) => {
     }
     return (
         <Layout>
-            <Container maxW='container.xl' py='12'>
-                <BreadcrumbCustom />
-                <Grid templateColumns='repeat(7, 1fr)' spacing={8} py='4' px={{ base: 2, md: 10 }} gap='8'>
+            <Container maxW='container.xl' py='12' minH={'400px'}>
+                {product == null && <p>Failed to load Product</p>}
+                {product != null && <Grid templateColumns='repeat(7, 1fr)' spacing={8} py='4' px={{ base: 2, md: 10 }} gap='8'>
                     <GridItem colSpan={{ base: 7, md: 3 }}>
                         <Image
                             width={'400px'}
@@ -75,7 +75,7 @@ const ProductPage: NextPage = ({ product }: any) => {
                             </Flex>
                         </Stack>
                     </GridItem>
-                </Grid>
+                </Grid>}
             </Container>
         </Layout>
     );
@@ -83,16 +83,15 @@ const ProductPage: NextPage = ({ product }: any) => {
 
 export async function getStaticPaths() {
     const res = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/product`)
+    if(!(res.ok)) return { paths: [] ,fallback: false };
     const products = await res.json()
-    const paths = products.result.map((product: any) => ({
-        params: { id: product._id },
-    }))
+    const paths = products.result.map((product: any) => ({ params: { slug: product.slug }, }))
     return { paths, fallback: false }
 }
 
 export async function getStaticProps({ params }: any) {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/product/${params.id}`)
-    const product = await res.json()
+    const res = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/product?slug=${params.slug}`)
+    const product = res.ok ?  await res.json() : null
     return { props: { product } }
 }
 

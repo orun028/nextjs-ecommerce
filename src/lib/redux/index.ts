@@ -1,4 +1,2 @@
-export { default as ReduxStore } from './store'
-export { default as ProductSlice} from './slice/cart'
-export { setPageId, removePageId } from './store'
-export * from './hook'
+export { default as CartSlice} from './slice/cart'
+export * from './store'

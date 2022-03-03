@@ -7,7 +7,7 @@ import useSWR from 'swr';
 
 const OrderPage: NextPage = () => {
     const [page, setPage] = useState(1)
-    const { data, error } = useSWR(`/api/order?page=${page}&limit=10`)
+    const { data, error } = useSWR(`/api/order?page=${page}&limit=10`, (url: RequestInfo) => fetch(url).then((res) => res.json()))
     const { result, total } = data || { result: [], total: 0 }
 
     const [checkedItems, setCheckedItems] = useState([false])
@@ -41,11 +41,10 @@ const OrderPage: NextPage = () => {
                                         isIndeterminate={isIndeterminate}
                                         onChange={(e) => setCheckedItems([e.target.checked])} />
                                 </Th>
-                                <Th>Image</Th>
-                                <Th>Name</Th>
-                                <Th>Stock</Th>
-                                <Th>Price</Th>
-                                <Th isNumeric>CreatedAt</Th>
+                                <Th>Đơn hàng</Th>
+                                <Th>Ngày</Th>
+                                <Th>Tình trạng</Th>
+                                <Th>Tổng</Th>
                             </Tr>
                         </Thead>
                         <Tbody>

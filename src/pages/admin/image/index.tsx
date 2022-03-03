@@ -10,7 +10,7 @@ import useSWR from 'swr';
 
 const AdminImage: NextPage = () => {
     const toast = useToast()
-    const { data, error } = useSWR('/api/image')
+    const { data, error } = useSWR('/api/image', (url: RequestInfo) => fetch(url).then((res) => res.json()))
     const { result, nextPage } = data ?? { result: undefined, nextPage: '' }
     const [edit, setEdit] = useState<any>()
     const { isOpen, onOpen, onClose } = useDisclosure()

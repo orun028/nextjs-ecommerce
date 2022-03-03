@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import client from "@/lib/mongodb";
+import { getAllOrder, getOrder } from "@/lib/mongodb/controller/order";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
   const { body, query, method } = req;
@@ -7,29 +8,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
 
   switch (method) {
     case "GET":
+      if(query.slug){
+        res.status(200).json(await getOrder(query));
+        break;
+      }
       let page = Number(query.page);
       let limit = Number(query.limit);
-      if (page || limit) {
-        let skipPage = 0;
-        if (page >= 1) {
-          skipPage = (page - 1) * (limit || 10);
-        }
-        delete query.page;
-        delete query.limit;
-        await collection
-          .find(query)
-          .skip(Number(skipPage))
-          .limit(limit || 10)
-          .then(async (values: any) => {
-            await collection.countDocuments().then((total: number) => {
-              res.status(200).json({ result: values, total: total });
-            });
-          });
-      } else {
-        await collection.find(query).then((values: any[]) => {
-          res.status(200).json({ result: values, total: values.length });
-        });
-      }
+      res.status(200).json(await getAllOrder(page, limit, query));
       break;
     case "POST":
       await collection

@@ -1,7 +1,7 @@
-import { ModalCustom, Pagination } from '@/components/ui';
-import { Checkbox, Container, Table, Tbody, Td, Th, Thead, Tr, Image, Box, Flex, Text, Stack, Link, Divider, Center, Button } from '@chakra-ui/react';
+import { Pagination, Image } from '@/components/ui';
+import { Checkbox, Container, Table, Tbody, Td, Th, Thead, Tr, Box, Flex, Text, Stack, Link, Divider, Center, Button } from '@chakra-ui/react';
 import { NextPage } from 'next';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { LayoutAdmin } from '@/components/common';
 import NextLink from 'next/link'
 import useSWR from 'swr';
@@ -12,9 +12,9 @@ function checkTypeSale({ price, isSale }: { price: number, isSale: { type: strin
     return 0;
 }
 
-const ProductPage: NextPage = () => {
+const ProductDB: NextPage = () => {
     const [page, setPage] = useState(1)
-    const { data, error } = useSWR(`/api/product?page=${page}&limit=10`)
+    const { data, error } = useSWR(`/api/product?page=${page}&limit=10`, (url: RequestInfo) => fetch(url).then((res) => res.json()))
     const { result, total } = data || { result: [], total: 0 }
 
     const [checkedItems, setCheckedItems] = useState([false])
@@ -63,7 +63,13 @@ const ProductPage: NextPage = () => {
                                             isChecked={checkedItems[0]}
                                             onChange={(e) => setCheckedItems([e.target.checked, checkedItems[1]])} />
                                     </Td>
-                                    <Td><Image src={''} fallbackSrc='https://via.placeholder.com/50' alt={'Image product' + v.name} /></Td>
+                                    <Td>
+                                        <Image src={v.image.item}
+                                            width='50px'
+                                            height='50px'
+                                            layout='intrinsic'
+                                            alt={'Image product' + v.name} />
+                                    </Td>
                                     <Td>
                                         <Stack as={Box} direction='column' justifyContent={'space-between'}>
                                             <Text fontSize={'md'}>{v.name}</Text>
@@ -108,4 +114,4 @@ const ProductPage: NextPage = () => {
     </LayoutAdmin>;
 }
 
-export default ProductPage;
+export default ProductDB;
