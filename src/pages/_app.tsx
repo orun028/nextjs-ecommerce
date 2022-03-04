@@ -6,9 +6,7 @@ import { persistStore } from 'redux-persist'
 import { PersistGate } from 'redux-persist/integration/react'
 import { Provider } from 'react-redux'
 import { useStore } from '@/lib/redux'
-import '@/lib/firebase/config'
-import { AuthProvider } from '@/hook/auth'
-import { AuthStateChanged } from '@/lib/firebase'
+import { SessionProvider } from "next-auth/react"
 
 function MyApp({ Component, pageProps }: AppProps) {
   const store = useStore(pageProps.initialReduxState)
@@ -18,16 +16,17 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ChakraProvider theme={theme}>
       <CSSReset />
-      <AuthProvider>
-        <AuthStateChanged>
+      <SessionProvider
+        // Provider options are not required but can be useful in situations where
+        // you have a short session maxAge time. Shown here with default values.
+        session={pageProps.session}
+      >
         <Provider store={store}>
           <PersistGate loading={<div>loading</div>} persistor={persistor}>
             <Component {...pageProps} />
           </PersistGate>
         </Provider>
-        </AuthStateChanged>
-        
-      </AuthProvider>
+      </SessionProvider>
     </ChakraProvider>
   )
 }

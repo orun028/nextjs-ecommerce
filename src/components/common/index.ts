@@ -1,6 +1,7 @@
 export { default as Layout } from './Layout'
 export { default as Logo } from './Layout/Logo'
-export { default as LayoutAdmin } from './Admin/LayoutAdmin'
 export { default as BreadcrumbCustom } from './Layout/BreadcrumbCustom'
+export { default as SearchBar } from './Layout/SearchBar'
+export { default as LayoutAdmin } from './Admin/LayoutAdmin'
 export { default as ListProduct } from './ListProduct'
 export { default as Fillter } from './Fillter'

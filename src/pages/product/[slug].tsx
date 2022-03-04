@@ -5,7 +5,7 @@ import { Layout } from '@/components/common';
 import { RadioCard, Rating, Image } from '@/components/ui';
 import { addToCart } from '@/lib/redux/slice/cart';
 import { useAppDispatch } from '@/hook/redux';
-import { numberToPrice } from '@/utils/formatValue';
+import { numberToPrice } from '@/utils/format';
 
 function checkTypeSale({ price, isSale }: { price: number, isSale: { type: string, value: number } }) {
     if (isSale.type === "value") return isSale.value;

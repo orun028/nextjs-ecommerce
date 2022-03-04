@@ -1,7 +1,7 @@
 import type { NextPage } from 'next'
 import { Container } from '@chakra-ui/react';
 import { Layout, ListProduct } from '@/components/common';
-import SlideWithCategory from '@/components/ui/SlideWithCategory';
+import { SlideWithCategory } from '@/components/ui';
 
 export async function getStaticProps() {
   const product = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/product?page=1&limit=10`)
@@ -10,7 +10,7 @@ export async function getStaticProps() {
 }
 
 const HomePage: NextPage = ({ productVal }: any) => {
-  const { result } = productVal || { result: []}
+  const { result } = productVal || { result: [] }
 
   return (
     <Layout>

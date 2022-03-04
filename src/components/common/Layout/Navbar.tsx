@@ -1,17 +1,18 @@
-import { Container, Box, Flex, Text, IconButton, Stack, Collapse, Icon, Link, Popover, PopoverTrigger, PopoverContent, useColorModeValue, Badge, PopoverBody, PopoverFooter, Image, ButtonGroup, useDisclosure, calc } from '@chakra-ui/react';
+import { Image, Container, Box, Flex, Text, IconButton, Stack, Collapse, Icon, Link, Popover, PopoverTrigger, PopoverContent, Badge, PopoverBody, PopoverFooter, useDisclosure, Button, Menu, MenuButton, MenuItem, MenuList } from '@chakra-ui/react';
 import { BsList, BsX, BsChevronDown, BsChevronUp, BsPersonCircle } from "react-icons/bs";
 import { FiShoppingBag } from "react-icons/fi";
-import NextLink from "next/link"
 import { useAppSelector } from '@/hook/redux';
-import Logo from './Logo'
-import SearchBar from './SearchBar';
-import { numberToPrice } from '@/utils/formatValue';
+import { numberToPrice } from '@/utils/format';
 import { getTotalPrice } from '@/utils/cart';
 import { NLink } from '@/components/ui';
-import clsx from 'clsx';
+import { Logo, SearchBar } from '@/components/common'
 import { useRouter } from 'next/router';
+import { signOut, useSession } from "next-auth/react"
+import clsx from 'clsx';
 
 export default function WithSubnavigation() {
+    const { data: session, status } = useSession()
+    const loading = status === "loading"
     const { isOpen, onToggle } = useDisclosure();
     const cart = useAppSelector(state => state.cart)
     const getItemsCount = () => {
@@ -39,30 +40,61 @@ export default function WithSubnavigation() {
                 <Stack
                     direction={'row'}
                     spacing={6} alignItems='center'>
-                    <Stack direction={'row'} spacing={6} alignItems='center' display={{ base: 'none', md: 'flex' }}>
-                        <DesktopNav />
-                        <Stack spacing={'1'} direction={'row'}>
-                            <Icon as={BsPersonCircle} fontSize='xl' />
-                            <Link as={'a'} fontSize={'sm'} fontWeight={400}> Tài khoản </Link>
-                        </Stack>
-                    </Stack>
+                    <DesktopNav />
                     <NLink href='/cart'>
-                        <Stack as={Box} direction={'row'} spacing={2} position='relative'>
+                        <Stack as={Box} direction={'row'} spacing={2} position='relative' shadow='md' rounded='md' p='2'>
+                            <Text fontSize='13px' fontWeight='medium'>{TotalCart}</Text>
                             <Icon as={FiShoppingBag} w={'5'} h={'5'} />
                             <Badge
                                 px='1.5' py='1px'
                                 rounded='full'
                                 position="absolute"
-                                top={-1.5}
-                                left={1}
+                                top={0.5}
+                                right={-1}
                                 variant='solid'
                                 colorScheme='green'
                                 fontSize='9px'>
                                 {getItemsCount()}
                             </Badge>
-                            <Text fontSize='13px' fontWeight='medium'>{TotalCart}</Text>
                         </Stack>
                     </NLink>
+                    <Stack direction={'row'} spacing={6} alignItems='center' display={{ base: 'none', md: 'flex' }}>
+
+                        <Stack spacing={'1'} direction={'row'}>
+                            {!session && (
+                                <NLink href={'/auth'} chackraLink={{ textDecoration: 'underline' }}>
+                                    Đăng nhập
+                                </NLink>
+                            )}
+                            {session?.user && (
+                                <>
+                                    {session.user.image && (
+                                        <Menu isLazy size={'sm'}>
+                                            <MenuButton>
+                                                <Image
+                                                    borderRadius='md'
+                                                    shadow='md'
+                                                    src={session.user.image}
+                                                    alt={`Img ${session.user.name}`}
+                                                    boxSize='40px'
+                                                    objectFit='cover' />
+                                            </MenuButton>
+                                            <MenuList>
+                                                <MenuItem>
+                                                <NLink href='/user'>Trang cá nhân</NLink>
+                                                </MenuItem>
+                                                <MenuItem onClick={(e) => {
+                                                    e.preventDefault()
+                                                    signOut()
+                                                }}>Đăng xuất</MenuItem>
+                                            </MenuList>
+                                        </Menu>
+                                    )}
+                                </>
+                            )}
+                        </Stack>
+                    </Stack>
+
                 </Stack>
                 <Flex
                     display={{ base: 'flex', md: 'none' }}>
@@ -74,7 +106,7 @@ export default function WithSubnavigation() {
                                 : <Icon as={BsList} w={5} h={5} />
                         }
                         variant={'ghost'}
-                        aria-label={'Toggle Navigation'}/>
+                        aria-label={'Toggle Navigation'} />
                 </Flex>
             </Container>
             <Collapse in={isOpen} animateOpacity>
@@ -88,43 +120,46 @@ const DesktopNav = () => {
     const router = useRouter()
     return (
         <Stack direction={'row'} spacing={4}>
-            {NAV_ITEMS.map((navItem) => (
-                <Box key={navItem.label}>
-                    <Popover trigger={'hover'} placement={'bottom-start'}>
-                        <PopoverTrigger>
-                            <Box role='button'>
-                                <NextLink href={navItem.href ?? '#'}>
-                                    <Link
-                                        className={clsx(router.pathname == navItem.href && 'desktopNav-active')}
-                                        p={2}
-                                        fontSize={'sm'}
-                                        fontWeight={500}
-                                        color={'gray.600'}
-                                        _hover={{ textDecoration: 'none', color: 'gray.800', }}>
+            {NAV_ITEMS.map((navItem) => {
+                const classN = clsx(router.pathname == navItem.href && 'desktopNav-active')
+                return (
+                    <Box key={navItem.label}>
+                        <Popover trigger={'hover'} placement={'bottom-start'}>
+                            <PopoverTrigger>
+                                <Box role='button'>
+                                    <NLink href={navItem.href ?? '#'}
+                                        chackraLink={{
+                                            className: classN,
+                                            padding: '2',
+                                            fontSize: 'sm',
+                                            fontWeight: '500',
+                                            color: 'gray.600',
+                                            _hover: { color: 'gray.800' }
+                                        }}>
                                         {navItem.label}
-                                    </Link>
-                                </NextLink>
-                            </Box>
-                        </PopoverTrigger>
+                                    </NLink>
+                                </Box>
+                            </PopoverTrigger>
 
-                        {navItem.children && (
-                            <PopoverContent
-                                border={0}
-                                boxShadow={'xl'}
-                                bg={'white'}
-                                p={4}
-                                rounded={'xl'}
-                                minW={'sm'}>
-                                <Stack>
-                                    {navItem.children.map((child) => (
-                                        <DesktopSubNav key={child.label} {...child} />
-                                    ))}
-                                </Stack>
-                            </PopoverContent>
-                        )}
-                    </Popover>
-                </Box>
-            ))}
+                            {navItem.children && (
+                                <PopoverContent
+                                    border={0}
+                                    boxShadow={'xl'}
+                                    bg={'white'}
+                                    p={4}
+                                    rounded={'xl'}
+                                    minW={'sm'}>
+                                    <Stack>
+                                        {navItem.children.map((child) => (
+                                            <DesktopSubNav key={child.label} {...child} />
+                                        ))}
+                                    </Stack>
+                                </PopoverContent>
+                            )}
+                        </Popover>
+                    </Box>
+                )
+            })}
         </Stack>
     );
 };

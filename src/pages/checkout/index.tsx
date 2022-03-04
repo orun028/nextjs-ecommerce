@@ -5,7 +5,7 @@ import { NextPage } from 'next';
 import { Image } from '@/components/ui';
 import Nextlink from 'next/link'
 import { useAppDispatch, useAppSelector } from '@/hook/redux';
-import { formatDate, numberToPrice } from '@/utils/formatValue'
+import { formatDate, numberToPrice } from '@/utils/format'
 import { useForm } from 'react-hook-form';
 import { getPriceByItem, getTotalPrice } from '@/utils/cart';
 import { resetCart } from '@/lib/redux/slice/cart';

@@ -1,6 +1,6 @@
 import { Layout } from '@/components/common';
 import { NLink, IncrementNumber, Image } from '@/components/ui';
-import { numberToPrice } from '@/utils/formatValue'
+import { numberToPrice } from '@/utils/format'
 import { getTotalPrice, getPriceByItem } from '@/utils/cart'
 import { Box, Container, Heading, List, ListItem, Stack, Text, Button, Divider, GridItem, Flex, Grid, Link, Input, Checkbox, Icon, IconButton } from '@chakra-ui/react';
 import { useState } from 'react';

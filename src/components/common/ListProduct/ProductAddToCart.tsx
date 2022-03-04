@@ -2,7 +2,7 @@ import Rating from '@/components/ui/Rating';
 import { Flex, Box, Badge, useColorModeValue, Text, AspectRatio, Link } from '@chakra-ui/react';
 import NextLink from "next/link"
 import Image from 'next/image'
-import { numberToPrice } from '@/utils/formatValue'
+import { numberToPrice } from '@/utils/format'
 
 function checkTypeSale({ price, isSale }: { price: number, isSale: { type: string, value: number } }) {
     if (isSale.type === "value") return isSale.value;

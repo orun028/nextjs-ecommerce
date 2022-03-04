@@ -9,8 +9,7 @@ const DashboardPage: NextPage = () => {
             123123
         </Container>
     </LayoutAdmin>
-    )
-        ;
+    );
 }
 
 export default DashboardPage;

@@ -4,15 +4,14 @@ import { NextPage } from 'next';
 import React, { useState } from 'react';
 import { LayoutAdmin } from '@/components/common';
 import useSWR from 'swr';
+import { formatDate } from '@/utils/format';
 
 const OrderPage: NextPage = () => {
     const [page, setPage] = useState(1)
     const { data, error } = useSWR(`/api/order?page=${page}&limit=10`, (url: RequestInfo) => fetch(url).then((res) => res.json()))
     const { result, total } = data || { result: [], total: 0 }
 
-    const [checkedItems, setCheckedItems] = useState([false])
-    const allChecked = checkedItems.every(Boolean)
-    const isIndeterminate = checkedItems.some(Boolean) && !allChecked
+    const [checkedItems, setCheckedItems] = useState([])
 
     const actionDelete = () => {
         var result = confirm("Want to delete?");
@@ -23,34 +22,34 @@ const OrderPage: NextPage = () => {
 
     if (error) return <div>Failed to load Product</div>
     return <LayoutAdmin>
-        <Container maxW={'container.xl'} py='6'>
-            <Stack justifyContent={'space-between'} direction='row'>
+        <Container maxW={'container.xl'}>
+            <Stack justifyContent={'space-between'} direction='row' bg={'white'} p='2' mb='4' shadow={'md'} rounded='md'>
                 <Flex></Flex>
                 <Button colorScheme={'blackAlpha'}>New item</Button>
             </Stack>
 
             {!data ? <Text>Loading...</Text>
-                : <Box>
+                : <Box bg={'white'} p='2' shadow={'md'} rounded='md'>
                     <Table variant='simple' my={'6'} size='sm'>
                         <Thead>
                             <Tr>
                                 <Th>
-                                    <Checkbox
-                                        colorScheme={'blackAlpha'}
-                                        isChecked={allChecked}
-                                        isIndeterminate={isIndeterminate}
-                                        onChange={(e) => setCheckedItems([e.target.checked])} />
+                                    <Checkbox/>
                                 </Th>
                                 <Th>Đơn hàng</Th>
-                                <Th>Ngày</Th>
-                                <Th>Tình trạng</Th>
-                                <Th>Tổng</Th>
+                                <Th isNumeric>Ngày</Th>
+                                <Th isNumeric>Tình trạng</Th>
+                                <Th isNumeric>Tổng</Th>
                             </Tr>
                         </Thead>
                         <Tbody>
                             {result && result.map(
                                 (v: any, i: React.Key) => <Tr key={i}>
-                                    <Td isNumeric>{new Date(v.createdAt).toLocaleString("en-US")}</Td>
+                                    <Td><Checkbox/></Td>
+                                    <Td>{v.userPay.name}</Td>
+                                    <Td isNumeric>{formatDate(v.createdAt)}</Td>
+                                    <Td isNumeric>{v.state}</Td>
+                                    <Td isNumeric>{v.total}</Td>
                                 </Tr>
                             )}
                         </Tbody>

@@ -8,7 +8,7 @@ import { Controller, useForm } from "react-hook-form";
 import { useState } from "react";
 import { convertToRaw } from "draft-js";
 import useSWR from 'swr';
-import { formatDate } from '../../../utils/formatValue';
+import { formatDate } from '../../../utils/format';
 
 interface FormData {
     name: string,

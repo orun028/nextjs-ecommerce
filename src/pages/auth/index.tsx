@@ -1,14 +1,15 @@
-import { Flex, Box, Input, Checkbox, Stack, Link, Button, Heading, Text, Icon, } from '@chakra-ui/react';
+import { Flex, Box, Input, Checkbox, Stack, Link, Button, Heading, Text, Icon, useBoolean, } from '@chakra-ui/react';
 import { NextPage } from 'next';
 import { useState } from 'react';
-import { withPublic } from '@/hook/route'
+import { getProviders, signIn } from "next-auth/react";
 
-const AuthPage: NextPage = ({ auth }: any) => {
-    const { user, loginWithGoogle, loginWithFacebook, loginWithEmail } = auth;
-    const [create, setCreate] = useState()
-    const handleClickWithEmail = (data: any) => {
-        const { email, password } = data
-        loginWithEmail(email,password)
+const AuthPage: NextPage = () => {
+    const [ create, setCreate ] = useBoolean()
+    const [ email, setEmail ] = useState<string>()
+    const [ pass, setPass ] = useState<string>()
+    const handleClickWithEmail = () => {
+        /* if(email && pass) return loginWithEmail({email, password: pass}) */
+        return console.log('Not values')
     }
     return (
         <Flex
@@ -23,10 +24,9 @@ const AuthPage: NextPage = ({ auth }: any) => {
                     </Text>
                 </Stack>
                 <Box px={8}>
-                    <form onSubmit={handleClickWithEmail}>
                     <Stack spacing={4}>
-                        <Input type="email" placeholder='Nhập email của bạn ' bg='blackAlpha.100' required/>
-                        <Input type="password" placeholder='Mật khẩu của bạn ' bg='blackAlpha.100' required/>
+                        <Input value={email || ''} onChange={e=>setEmail(e.target.value)} type="email" placeholder='Nhập email của bạn ' bg='blackAlpha.100'/>
+                        <Input value={pass || ''} onChange={e=>setPass(e.target.value)} type="password" placeholder='Mật khẩu của bạn ' bg='blackAlpha.100'/>
                         <Stack
                             direction={{ base: 'column', sm: 'row' }}
                             align={'start'}
@@ -34,17 +34,16 @@ const AuthPage: NextPage = ({ auth }: any) => {
                             <Checkbox>Remember me</Checkbox>
                             <Link color={'blue.400'}>Forgot password?</Link>
                         </Stack>
-                        <Button type='submit' bg={'green.400'} color={'white'} _hover={{ bg: 'green.500', }}> Đăng nhập với email </Button>
+                        <Button onClick={handleClickWithEmail} bg={'green.400'} color={'white'} _hover={{ bg: 'green.500', }}> Đăng nhập với email </Button>
                     </Stack>
-                    </form>
                 </Box>
                 <Box px={8}>
                     <Stack spacing={4}>
-                        <Button onClick={loginWithGoogle} variant={'outline'} _hover={{ bg: 'gray.300', }}>
+                        <Button onClick={()=>signIn('google')} variant={'outline'} _hover={{ bg: 'gray.300', }}>
                             <Icon as={IconGoogle} w='5' h='5' mr='2' />
                             Đăng nhập với Google
                         </Button>
-                        <Button onClick={loginWithFacebook} variant={'outline'} _hover={{ bg: 'gray.300', }}>
+                        <Button onClick={()=>signIn('facebook')} variant={'outline'} _hover={{ bg: 'gray.300', }}>
                             <Icon as={IconFaceBook} w='6' h='6' mr='2' />
                             Đăng nhập với Facebook
                         </Button>
@@ -71,4 +70,4 @@ const IconFaceBook = (props: any) => {
     </Box>)
 }
 
-export default withPublic(AuthPage);
+export default AuthPage;

@@ -38,11 +38,11 @@ const LinkItems: Array<LinkItemProps> = [
 ];
 
 
-export default function SimpleSidebar({ children }: { children: ReactNode }) {
+const SimpleSidebar = ({ children }: { children: ReactNode }) => {
 
     const { isOpen, onClose, onToggle } = useDisclosure();
     return (
-        <Box minH="100vh" bg={'gray.50'}>
+        <Box minH="100vh" bg={'gray.100'}>
             <SidebarContent
                 display={{ base: 'none', md: 'block' }}
             />
@@ -204,3 +204,5 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
         </Flex>
     );
 };
+
+export default SimpleSidebar;
