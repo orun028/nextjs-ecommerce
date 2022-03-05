@@ -1,43 +1,22 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import client from "@/lib/mongodb";
+import { OnConnect, listModel, controll } from "@/lib/mongodb";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
   const { body, query, method } = req;
-  const collection = client.UserModel;
+  const collection = listModel.user;
 
   switch (method) {
     case "GET":
+      if(query.slug){
+        res.status(200).json(await controll.getByQuery(collection, query));
+        break;
+      }
       let page = Number(query.page);
       let limit = Number(query.limit);
-      if (page || limit) {
-        let skipPage = 0;
-        if (page >= 1) {
-          skipPage = (page - 1) * (limit || 10);
-        }
-        delete query.page;
-        delete query.limit;
-        await collection
-          .find(query)
-          .skip(Number(skipPage))
-          .limit(limit || 10)
-          .then(async (values: any) => {
-            await collection.countDocuments().then((total: number) => {
-              res.status(200).json({ result: values, total: total });
-            });
-          });
-      } else {
-        await collection.find(query).then((values: any[]) => {
-          res.status(200).json({ result: values, total: values.length });
-        });
-      }
+      res.status(200).json(await controll.getAll(collection, page, limit));
       break;
     case "POST":
-      await collection
-        .create(body)
-        .then((value: any) => {
-          res.status(200).json(value);
-        })
-        .catch((err: any) => console.log(err));
+      res.status(201).json(await controll.create(collection, body))
       break;
     default:
       res.setHeader("Allow", ["GET", "POST"]);
@@ -45,4 +24,4 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
   }
 };
 
-export default client.OnConnect(handler);
+export default OnConnect(handler);

@@ -1,24 +1,24 @@
-import { delProduct, getProduct, upProduct } from '@/lib/mongodb/controller/product';
 import type { NextApiRequest, NextApiResponse } from "next";
-import client from "@/lib/mongodb";
+import { OnConnect, listModel, controll } from "@/lib/mongodb";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
   const { query, method, body, } = req;
   const { id: _id } = query;
+  const collection = listModel.product;
   
   switch (method) {
     case "GET":
-      res.status(200).json(await getProduct({_id}))
+      res.status(200).json(await controll.getByQuery(collection, {_id}))
       break;
     case "PUT":
-      res.status(200).json(await upProduct({_id}, body))
+      res.status(200).json(await controll.updateByQuery(collection, {_id}, body))
       break;
     case "DELETE":
-      res.status(200).json(await delProduct({_id}))
+      res.status(200).json(await controll.deleteByQuery(collection, {_id}))
       break;
     default:
       res.setHeader("Allow", ["GET", "PUT", "DELETE"]);
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 };
-export default client.OnConnect(handler);
+export default OnConnect(handler);

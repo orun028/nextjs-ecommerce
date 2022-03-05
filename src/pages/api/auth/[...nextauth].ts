@@ -1,9 +1,10 @@
 import NextAuth from "next-auth";
 import { MongoDBAdapter } from "@next-auth/mongodb-adapter";
+import { clientPromise } from "@/lib/mongodb/connect";
 import FacebookProvider from "next-auth/providers/facebook";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { clientPromise } from "@/lib/mongodb/connect";
+import { verifyPassword } from "@/lib/hash";
 
 // https://next-auth.js.org/configuration/options
 export default NextAuth({
@@ -13,54 +14,33 @@ export default NextAuth({
   providers: [
     CredentialsProvider({
       name: "Sign in with email and password",
-      // The credentials is used to generate a suitable form on the sign in page.
-      // You can specify whatever fields you are expecting to be submitted.
-      // e.g. domain, username, password, 2FA token, etc.
-      // You can pass any HTML attribute to the <input> tag through the object.
       credentials: {
-        username: { label: "Username", type: "text", placeholder: "jsmith" },
+        email: { label: "Email", type: "text", placeholder: 'jonh@doe.com' },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials, req) {
-        // Add logic here to look up the user from the credentials supplied
-        const user = { id: 1, name: "J Smith", email: "jsmith@example.com" };
-
-        if (user) {
-          // Any object returned will be saved in `user` property of the JWT
-          return user;
-        } else {
-          // If you return null then an error will be displayed advising the user to check their details.
-          return null;
-
-          // You can also Reject this callback with an Error thus the user will be sent to the error page with the error message as a query parameter
+      async authorize(credentials) {
+        const collection = (await clientPromise).db().collection("users");
+        const result = await collection.findOne({ email: credentials?.email });
+        if (!result) {
+          (await clientPromise).close();
+          throw new Error("No user found with the email");
         }
+        const checkPassword = await verifyPassword( credentials?.password, result?.password );
+        if (!checkPassword) {
+          (await clientPromise).close();
+          throw new Error("Password doesnt match");
+        }
+        if (result) return result;
+        return null;
       },
     }),
     FacebookProvider({
       clientId: process.env.FACEBOOK_ID,
-      clientSecret: process.env.FACEBOOK_SECRET,
-      profile(profile) {
-        return {
-          id: profile.id,
-          type: "facebook",
-          name: profile.kakao_account?.profile.nickname,
-          email: profile.kakao_account?.email,
-          image: profile.kakao_account?.profile.profile_image_url
-        };
-      },
+      clientSecret: process.env.FACEBOOK_SECRET
     }),
     GoogleProvider({
       clientId: process.env.GOOGLE_ID,
-      clientSecret: process.env.GOOGLE_SECRET,
-      profile(profile) {
-        return {
-          id: profile.id,
-          type: "google",
-          name: profile.kakao_account?.profile.nickname,
-          email: profile.kakao_account?.email,
-          image: profile.kakao_account?.profile.profile_image_url
-        };
-      },
+      clientSecret: process.env.GOOGLE_SECRET
     }),
   ],
   secret: process.env.NEXTAUTH_SECRET,
@@ -97,9 +77,15 @@ export default NextAuth({
   // https://next-auth.js.org/configuration/callbacks
   callbacks: {
     async signIn({ user, account, profile, email, credentials }) {
+      
       return true;
     },
-    // async redirect({ url, baseUrl }) { return baseUrl },
+    redirect({ url, baseUrl   }) {
+      if (url.startsWith(baseUrl)) return url
+      // Allows relative callback URLs
+      else if (url.startsWith("/")) return new URL(url, baseUrl).toString()
+      return baseUrl
+    },
     // async session({ session, token, user }) { return session },
     async jwt({ token, user, account, profile, isNewUser }) {
       token.userRole = "admin";

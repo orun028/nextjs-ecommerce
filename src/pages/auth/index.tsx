@@ -2,13 +2,24 @@ import { Flex, Box, Input, Checkbox, Stack, Link, Button, Heading, Text, Icon, u
 import { NextPage } from 'next';
 import { useState } from 'react';
 import { getProviders, signIn } from "next-auth/react";
+import { BsThreeDots } from 'react-icons/bs';
+import { NLink } from '@/components/ui';
 
 const AuthPage: NextPage = () => {
-    const [ create, setCreate ] = useBoolean()
-    const [ email, setEmail ] = useState<string>()
-    const [ pass, setPass ] = useState<string>()
-    const handleClickWithEmail = () => {
-        /* if(email && pass) return loginWithEmail({email, password: pass}) */
+    const [loading, setloading] = useState(false)
+    const [create, setCreate] = useBoolean()
+    const [email, setEmail] = useState<string>()
+    const [pass, setPass] = useState<string>()
+    const handleClickWithEmail = async (e: any) => {
+        e.preventDefault()
+        if (email && pass) {
+            setloading(true)
+            const res = await signIn('credentials', { email, pass })
+            if (res) {
+                alert(res)
+            }
+            setloading(false)
+        }
         return console.log('Not values')
     }
     return (
@@ -20,13 +31,13 @@ const AuthPage: NextPage = () => {
                 <Stack align={'center'}>
                     <Heading fontSize={'2xl'}>Đăng nhập vào tài khoản của bạn</Heading>
                     <Text fontSize={'md'} color={'gray.600'}>
-                        Không có tài khoản? <Link>Đăng kí</Link>
+                        Không có tài khoản? <NLink href={'/auth/signup'} >Đăng kí</NLink>
                     </Text>
                 </Stack>
                 <Box px={8}>
                     <Stack spacing={4}>
-                        <Input value={email || ''} onChange={e=>setEmail(e.target.value)} type="email" placeholder='Nhập email của bạn ' bg='blackAlpha.100'/>
-                        <Input value={pass || ''} onChange={e=>setPass(e.target.value)} type="password" placeholder='Mật khẩu của bạn ' bg='blackAlpha.100'/>
+                        <Input value={email || ''} onChange={e => setEmail(e.target.value)} type="email" placeholder='Nhập email của bạn ' bg='blackAlpha.100' />
+                        <Input value={pass || ''} onChange={e => setPass(e.target.value)} type="password" placeholder='Mật khẩu của bạn ' bg='blackAlpha.100' />
                         <Stack
                             direction={{ base: 'column', sm: 'row' }}
                             align={'start'}
@@ -34,16 +45,25 @@ const AuthPage: NextPage = () => {
                             <Checkbox>Remember me</Checkbox>
                             <Link color={'blue.400'}>Forgot password?</Link>
                         </Stack>
-                        <Button onClick={handleClickWithEmail} bg={'green.400'} color={'white'} _hover={{ bg: 'green.500', }}> Đăng nhập với email </Button>
+                        <Button
+                            isLoading={loading}
+                            spinner={<BsThreeDots size={8} color='white' />}
+                            color='white'
+                            onClick={handleClickWithEmail}
+                            bg={'green.400'}
+                            _hover={{ bg: 'green.500' }}
+                            disabled={!email || !pass}>
+                            Đăng nhập với email
+                        </Button>
                     </Stack>
                 </Box>
                 <Box px={8}>
                     <Stack spacing={4}>
-                        <Button onClick={()=>signIn('google')} variant={'outline'} _hover={{ bg: 'gray.300', }}>
+                        <Button onClick={() => signIn('google')} variant={'outline'} _hover={{ bg: 'gray.300', }}>
                             <Icon as={IconGoogle} w='5' h='5' mr='2' />
                             Đăng nhập với Google
                         </Button>
-                        <Button onClick={()=>signIn('facebook')} variant={'outline'} _hover={{ bg: 'gray.300', }}>
+                        <Button onClick={() => signIn('facebook')} variant={'outline'} _hover={{ bg: 'gray.300', }}>
                             <Icon as={IconFaceBook} w='6' h='6' mr='2' />
                             Đăng nhập với Facebook
                         </Button>

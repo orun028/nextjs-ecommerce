@@ -20,7 +20,7 @@ const Link: FC<IProps> = (props) => {
   };
   return (
     <NextLink {...nextLinkProps} passHref>
-      <ChackraLink {...chackraLink} style={{textDecoration: 'none'}}>{children}</ChackraLink>
+      <ChackraLink {...chackraLink}>{children}</ChackraLink>
     </NextLink>
   );
 };

@@ -1,9 +1,15 @@
-import OnConnect from "./connect";
 import ProductModel from "./model/product";
 import CategoryModel from "./model/category";
 import OrderModel from "./model/order";
 import SupplierModel from "./model/supplier";
 import UserModel from "./model/user";
 
-const customMongoose = {OnConnect, ProductModel, CategoryModel, OrderModel, SupplierModel, UserModel};
-export default customMongoose;
+export { default as OnConnect } from "./connect";
+export { default as controll } from "./controller";
+export const listModel = {
+  product: ProductModel,
+  category: CategoryModel,
+  order: OrderModel,
+  supplier: SupplierModel,
+  user: UserModel,
+};

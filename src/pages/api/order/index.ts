@@ -1,28 +1,22 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import client from "@/lib/mongodb";
-import { getAllOrder, getOrder } from "@/lib/mongodb/controller/order";
+import { OnConnect, listModel, controll } from "@/lib/mongodb";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
   const { body, query, method } = req;
-  const collection = client.OrderModel;
+  const collection = listModel.order;
 
   switch (method) {
     case "GET":
       if(query.slug){
-        res.status(200).json(await getOrder(query));
+        res.status(200).json(await controll.getByQuery(collection, query));
         break;
       }
       let page = Number(query.page);
       let limit = Number(query.limit);
-      res.status(200).json(await getAllOrder(page, limit, query));
+      res.status(200).json(await controll.getAll(collection, page, limit));
       break;
     case "POST":
-      await collection
-        .create(body)
-        .then((value: any) => {
-          res.status(200).json(value);
-        })
-        .catch((err: any) => console.log(err));
+      res.status(201).json(await controll.create(collection, body))
       break;
     default:
       res.setHeader("Allow", ["GET", "POST"]);
@@ -30,4 +24,4 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
   }
 };
 
-export default client.OnConnect(handler);
+export default OnConnect(handler);

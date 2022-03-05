@@ -1,4 +1,4 @@
-import { useSession } from "next-auth/react"
+import { signOut, useSession } from "next-auth/react"
 import { Layout } from "@/components/common"
 import { Box, useColorModeValue, Avatar, Heading, Stack, Badge, Button, Text, Flex, Container, Tabs, Tab, TabList, TabPanel, TabPanels } from "@chakra-ui/react"
 
@@ -35,6 +35,7 @@ export default function MePage() {
                         </Box>
                         <Stack mt={8} direction={'row'} spacing={4}>
                             <Button
+                                onClick={()=>signOut()}
                                 flex={1}
                                 fontSize={'sm'}
                                 rounded={'full'}

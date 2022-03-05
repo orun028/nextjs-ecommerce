@@ -9,7 +9,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
     case "GET":
       
       break;
-    
     default:
       res.setHeader("Allow", ["GET"]);
       res.status(405).end(`Method ${method} Not Allowed`);
