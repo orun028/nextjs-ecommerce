@@ -1,5 +1,5 @@
 import { model, Schema, models } from "mongoose";
-import { hashPassword, verifyPassword } from "@/lib/hash";
+import { hashPassword } from "@/lib/hash";
 
 const UserSchema = new Schema({
     name: { type: String, required: true },
@@ -27,7 +27,7 @@ UserSchema.pre('save', async function (next) {
 });
 
 UserSchema.pre('save' || 'findByIdAndUpdate', async function (next) {
-    if (this.password) this.password = hashPassword(this.password);
+    if (this.password) this.password = await hashPassword(this.password);
     /* if (this.name && this.email && !this.password && !this.confirmed) {
         await Role.findOne({ code: 'role_user_public' })
             .then(e => this.role = e._id)

@@ -31,9 +31,9 @@ const Layout = ({ children }: { children: ReactNode }) => {
             </Head>
             <Navbar />
             <main>
-                <Container maxW={'container.xl'}>
-                    
-                </Container>
+                {/* <Container maxW={'container.xl'}>
+                    <Breadcrumb/>
+                </Container> */}
                 {children}
             </main>
             <Footer />

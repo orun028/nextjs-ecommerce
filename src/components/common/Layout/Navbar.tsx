@@ -67,30 +67,36 @@ export default function WithSubnavigation() {
                                 </NLink>
                             )}
                             {session?.user && (
-                                <>
-                                    {session.user.image && (
-                                        <Menu isLazy size={'sm'}>
-                                            <MenuButton>
-                                                <Image
-                                                    borderRadius='md'
-                                                    shadow='md'
-                                                    src={session.user.image}
-                                                    alt={`Img ${session.user.name}`}
-                                                    boxSize='40px'
-                                                    objectFit='cover' />
-                                            </MenuButton>
-                                            <MenuList>
-                                                <MenuItem>
-                                                <NLink href='/user'>Trang cá nhân</NLink>
-                                                </MenuItem>
-                                                <MenuItem onClick={(e) => {
-                                                    e.preventDefault()
-                                                    signOut()
-                                                }}>Đăng xuất</MenuItem>
-                                            </MenuList>
-                                        </Menu>
-                                    )}
-                                </>
+
+                                <Menu isLazy size={'sm'}>
+                                    <MenuButton>
+                                        {session.user.image ? <Image
+                                            borderRadius='md'
+                                            shadow='md'
+                                            src={session.user.image}
+                                            alt={`Img ${session.user.name}`}
+                                            boxSize='40px'
+                                            objectFit='cover' />
+                                            : <Image
+                                                borderRadius='md'
+                                                shadow='md'
+                                                src={`/image/instagram-g7ba1513df_640.png`}
+                                                alt={`Img ${session.user.name}`}
+                                                boxSize='40px'
+                                                objectFit='cover' />}
+                                    </MenuButton>
+                                    <MenuList>
+                                        <MenuItem>
+                                            <NLink href='/user'>Trang cá nhân</NLink>
+                                        </MenuItem>
+                                        <MenuItem onClick={(e) => {
+                                            e.preventDefault()
+                                            signOut()
+                                        }}>Đăng xuất</MenuItem>
+                                    </MenuList>
+                                </Menu>
+
+
                             )}
                         </Stack>
                     </Stack>

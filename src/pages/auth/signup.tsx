@@ -1,16 +1,19 @@
-import { Flex, Box, Input, Checkbox, Stack, Link, Button, Heading, Text, Icon, useBoolean, FormControl, FormLabel, FormHelperText, FormErrorMessage, useToast, } from '@chakra-ui/react';
+import { Flex, Box, Input, Stack, Button, Heading, Text, FormControl, FormLabel, FormHelperText, useToast, } from '@chakra-ui/react';
 import { NextPage } from 'next';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { NLink } from '@/components/ui';
 import { useForm } from 'react-hook-form';
-import { signIn } from 'next-auth/react';
+import { useRouter } from 'next/router';
+import { getSession } from 'next-auth/react';
 
 const AddUserPage: NextPage = () => {
-    const [loading, setloading] = useState(false);
+    const router = useRouter()
+    const [load, setLoad] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const toast = useToast()
-    const { register, handleSubmit, watch, formState: { errors } } = useForm();
+    const { register, handleSubmit, formState: { errors } } = useForm();
     const onSubmit = async (data: any) => {
-        setloading(true)
+        setLoad(true)
         const res = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/user`, {
             method: 'POST',
             headers: { "Content-Type": "application/json" },
@@ -30,9 +33,22 @@ const AddUserPage: NextPage = () => {
                 duration: 3000,
                 isClosable: true,
             })
-            signIn('credentials', {email: data.email, password: data.password})
+            router.push('/auth')
         }
-        setloading(false)
+        setLoad(false)
+    }
+    useEffect(() => {
+        getSession().then((session) => {
+            if (session) {
+                router.replace('/');
+            } else {
+                setIsLoading(false);
+            }
+        });
+    }, [router]);
+
+    if (isLoading) {
+        return <p>Loading...</p>;
     }
 
     return <Flex
@@ -70,7 +86,7 @@ const AddUserPage: NextPage = () => {
                     <Button
                         mt='4'
                         w='full'
-                        isLoading={loading}
+                        isLoading={load}
                         color='white'
                         type='submit'
                         bg={'green.400'}

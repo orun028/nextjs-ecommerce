@@ -26,7 +26,8 @@ const values = {
   },
   
   create: async function (collection: Model<any>, body: any) {
-    return await collection.create(body);
+    const data = new collection(body)
+    return await data.save()
   },
   
   getByQuery: async function (collection: Model<any>, query: ParsedUrlQuery) {

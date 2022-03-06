@@ -1,27 +1,42 @@
-import { Flex, Box, Input, Checkbox, Stack, Link, Button, Heading, Text, Icon, useBoolean, } from '@chakra-ui/react';
+import { Flex, Box, Input, Checkbox, Stack, Link, Button, Heading, Text, Icon, useToast, FormControl, FormHelperText, FormLabel } from '@chakra-ui/react';
 import { NextPage } from 'next';
-import { useState } from 'react';
-import { getProviders, signIn } from "next-auth/react";
-import { BsThreeDots } from 'react-icons/bs';
+import { useRouter } from 'next/router';
+import { useState, useEffect } from 'react';
+import { getSession, signIn } from "next-auth/react";
 import { NLink } from '@/components/ui';
+import { useForm } from 'react-hook-form';
 
 const AuthPage: NextPage = () => {
-    const [loading, setloading] = useState(false)
-    const [create, setCreate] = useBoolean()
-    const [email, setEmail] = useState<string>()
-    const [pass, setPass] = useState<string>()
-    const handleClickWithEmail = async (e: any) => {
-        e.preventDefault()
-        if (email && pass) {
-            setloading(true)
-            const res = await signIn('credentials', { email, pass })
-            if (res) {
-                alert(res)
-            }
-            setloading(false)
+    const [load, setLoad] = useState(false)
+    const [isLoading, setIsLoading] = useState(true);
+    const router = useRouter();
+    const toast = useToast()
+    const { register, handleSubmit, formState: { errors } } = useForm();
+    const onSubmit = async (data: any) => {
+        const { email, password } = data;
+        if (email && password) {
+            setLoad(true)
+            await signIn('credentials', { email, password }).catch(error => {
+                console.log(error)
+            })
+            setLoad(false)
         }
-        return console.log('Not values')
     }
+
+    useEffect(() => {
+        getSession().then((session) => {
+            if (session) {
+                router.replace('/');
+            } else {
+                setIsLoading(false);
+            }
+        });
+    }, [router]);
+
+    if (isLoading) {
+        return <p>Loading...</p>;
+    }
+
     return (
         <Flex
             minH={'100vh'}
@@ -35,27 +50,34 @@ const AuthPage: NextPage = () => {
                     </Text>
                 </Stack>
                 <Box px={8}>
-                    <Stack spacing={4}>
-                        <Input value={email || ''} onChange={e => setEmail(e.target.value)} type="email" placeholder='Nhập email của bạn ' bg='blackAlpha.100' />
-                        <Input value={pass || ''} onChange={e => setPass(e.target.value)} type="password" placeholder='Mật khẩu của bạn ' bg='blackAlpha.100' />
-                        <Stack
-                            direction={{ base: 'column', sm: 'row' }}
-                            align={'start'}
-                            justify={'space-between'}>
-                            <Checkbox>Remember me</Checkbox>
-                            <Link color={'blue.400'}>Forgot password?</Link>
+                    <form onSubmit={handleSubmit(onSubmit)}>
+                        <Stack spacing={4}>
+                            <FormControl id="email" isRequired isInvalid={errors.email}>
+                                <FormLabel>Email</FormLabel>
+                                <Input type="email" bg='blackAlpha.100' placeholder='jonh@gmail.com' {...register("email", { maxLength: 20 })} />
+                            </FormControl>
+                            <FormControl id="password" isRequired isInvalid={errors.password}>
+                                <FormLabel>Mật khẩu</FormLabel>
+                                <Input type="password" bg='blackAlpha.100' placeholder='****' {...register("password", { minLength: 8, maxLength: 20 })} />
+                                <FormHelperText>Mật khẩu bao gồm 8 chữ và số</FormHelperText>
+                            </FormControl>
+                            <Stack
+                                direction={{ base: 'column', sm: 'row' }}
+                                align={'start'}
+                                justify={'space-between'}>
+                                <Checkbox>Lưu đăng nhập</Checkbox>
+                                <Link color={'blue.400'}>Quên mật khẩu?</Link>
+                            </Stack>
+                            <Button
+                                isLoading={load}
+                                color='white'
+                                type='submit'
+                                bg={'green.400'}
+                                _hover={{ bg: 'green.500' }}>
+                                Đăng nhập với email
+                            </Button>
                         </Stack>
-                        <Button
-                            isLoading={loading}
-                            spinner={<BsThreeDots size={8} color='white' />}
-                            color='white'
-                            onClick={handleClickWithEmail}
-                            bg={'green.400'}
-                            _hover={{ bg: 'green.500' }}
-                            disabled={!email || !pass}>
-                            Đăng nhập với email
-                        </Button>
-                    </Stack>
+                    </form>
                 </Box>
                 <Box px={8}>
                     <Stack spacing={4}>
@@ -68,6 +90,11 @@ const AuthPage: NextPage = () => {
                             Đăng nhập với Facebook
                         </Button>
                     </Stack>
+                </Box>
+                <Box px={8} >
+                    <Text textAlign={'center'} fontSize={'sm'} color={'gray.600'}>
+                        Quay lại <NLink href={'/'} chackraLink={{ color: 'blue.700', fontWeight: 'medium' }}>Trang chủ</NLink>
+                    </Text>
                 </Box>
             </Stack>
         </Flex>

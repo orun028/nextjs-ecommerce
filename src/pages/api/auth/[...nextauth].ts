@@ -21,6 +21,7 @@ export default NextAuth({
       async authorize(credentials) {
         const collection = (await clientPromise).db().collection("users");
         const result = await collection.findOne({ email: credentials?.email });
+        
         if (!result) {
           (await clientPromise).close();
           throw new Error("No user found with the email");
@@ -30,8 +31,13 @@ export default NextAuth({
           (await clientPromise).close();
           throw new Error("Password doesnt match");
         }
-        if (result) return result;
-        return null;
+        (await clientPromise).close();
+        return {
+          id: result._id,
+          email: result.email,
+          name: result.name,
+          image: result.image
+        };
       },
     }),
     FacebookProvider({
@@ -67,7 +73,7 @@ export default NextAuth({
   pages: {
     signIn: "/auth", // Displays signin buttons
     // signOut: '/auth/signout', // Displays form with sign out button
-    // error: '/auth/error', // Error code passed in query string as ?error=
+    error: '/auth', // Error code passed in query string as ?error=
     // verifyRequest: '/auth/verify-request', // Used for check email page
     // newUser: null // If set, new users will be directed here on first sign in
   },
