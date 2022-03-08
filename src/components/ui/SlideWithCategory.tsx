@@ -1,12 +1,15 @@
-import { Box, IconButton, List, ListIcon, ListItem, Stack, useBreakpointValue, Text, Grid, GridItem, Icon, Popover, PopoverContent, PopoverTrigger, Link, Flex } from "@chakra-ui/react";
+import { Box, IconButton, Stack, useBreakpointValue, Text, Grid, GridItem, Icon, Popover, PopoverContent, PopoverTrigger, Link, Flex } from "@chakra-ui/react";
 import { useState } from "react";
-import { BiLeftArrowAlt, BiRightArrowAlt } from "react-icons/bi";
-import { BsChevronRight, BsFillBrightnessAltHighFill, BsList } from "react-icons/bs";
+import { BsChevronRight, BsList } from "react-icons/bs";
 import Slider from 'react-slick';
-import Hero from "./Hero";
 import NextLink from 'next/link'
+import { FiAward, FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import { FaFire, FaRedhat, FaKiwiBird, FaGlasses, FaGift } from "react-icons/fa";
+import { RiTShirt2Line } from "react-icons/ri";
+import Image from "./Image";
+
+
 const settings = {
-    dots: true,
     arrows: false,
     fade: true,
     infinite: true,
@@ -18,6 +21,7 @@ const settings = {
 };
 interface NavItem {
     label: string;
+    ico?: any;
     subLabel?: string;
     children?: Array<NavItem>;
     href?: string;
@@ -29,225 +33,183 @@ const SlideWithCategory = () => {
 
     // These are the breakpoints which changes the position of the
     // buttons as the screen size changes
-    const top = useBreakpointValue({ base: '90%', md: '50%' });
-    const side = useBreakpointValue({ base: '30%', md: '10px' });
+    const top = useBreakpointValue({ base: '50%', md: '50%' });
+    const side = useBreakpointValue({ base: '1%', md: '10px' });
+    const widthImage = useBreakpointValue({ base: 900, md: 850, lg: 950});
+    const heightImage = useBreakpointValue({ base: 460, md: 450, lg: 650 });
 
     // These are the images used in the slide
     const cards = [
-        'https://images.unsplash.com/photo-1612852098516-55d01c75769a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1yZWxhdGVkfDR8fHxlbnwwfHx8fA%3D%3D&auto=format&fit=crop&w=900&q=60',
-        'https://images.unsplash.com/photo-1627875764093-315831ac12f7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1yZWxhdGVkfDJ8fHxlbnwwfHx8fA%3D%3D&auto=format&fit=crop&w=900&q=60',
-        'https://images.unsplash.com/photo-1571432248690-7fd6980a1ae2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1yZWxhdGVkfDl8fHxlbnwwfHx8fA%3D%3D&auto=format&fit=crop&w=900&q=60',
+        `https://res.cloudinary.com/dpgvup3wu/image/upload/v1646633642/layout/td47nnuikufggjnynnhj.png`,
+        `https://res.cloudinary.com/dpgvup3wu/image/upload/v1646633642/layout/dxk8httsxtfillkhg3rx.png`
     ];
     const CATE_ITEMS: Array<NavItem> = [
         {
             label: 'Giảm nhiều nhất',
+            ico: <FaFire />,
             href: '#',
         }, {
             label: 'Phổ biến nhất',
+            ico: <FiAward />,
             href: '#',
         }, {
-            label: 'Phần thân trên',
+            label: 'Nón, mũ len',
+            ico: <FaRedhat />,
+            href: '#',
+        }, {
+            label: 'Áo phông, sơ mi',
+            ico: <RiTShirt2Line />,
             href: '#',
             children: [
                 {
-                    label: 'Explore Design Work',
-                    subLabel: 'Trending Design to inspire you',
+                    label: 'Hoodie',
+                    subLabel: 'Vải mát không rụng lông',
                     href: '#',
                 },
                 {
-                    label: 'New & Noteworthy',
-                    subLabel: 'Up-and-coming Designers',
+                    label: 'Áo thun họa tiết',
+                    subLabel: '100% cotton mềm mượt mát',
                     href: '#',
                 },
             ],
         }, {
-            label: 'Phần thân dưới',
+            label: 'Quần kaki, jean',
             href: '#',
-            children: [
-                {
-                    label: 'Explore Design Work',
-                    subLabel: 'Trending Design to inspire you',
-                    href: '#',
-                },
-                {
-                    label: 'New & Noteworthy',
-                    subLabel: 'Up-and-coming Designers',
-                    href: '#',
-                },
-            ],
+            ico: <FaKiwiBird />,
+        }, {
+            label: 'Giày, dép',
+            ico: <FaGift />,
+            href: '#',
         }, {
             label: 'Phụ kiện',
             href: '#',
-            children: [
-                {
-                    label: 'Explore Design Work',
-                    subLabel: 'Trending Design to inspire you',
-                    href: '#',
-                },
-                {
-                    label: 'New & Noteworthy',
-                    subLabel: 'Up-and-coming Designers',
-                    href: '#',
-                },
-            ],
-        }, {
-            label: 'Quà tặng',
-            href: '#',
-        },
+            ico: <FaGlasses />
+        }
     ];
-    return <Grid templateColumns={'repeat(5,1fr)'} gap={2} h={{ base: 'full', md: '500px', lg: '400px' }}>
-        <GridItem colSpan={{ base: 0, lg: 1 }} display={{ base: 'none', lg: 'block' }}>
-            <Stack h={'400px'} direction={'column'} /* border='1px' borderColor='gray.300'  */ rounded='md' shadow={'md'} >
-                <NextLink href={'/product'}>
-                    <Link style={{ textDecoration: 'none' }}>
-                        <Stack direction={'row'} alignItems='center' p='3' fontWeight={500} bg='green.500' color='white' rounded='md' shadow={'md'}>
-                            <Icon as={BsList} />
-                            <Text w={'full'}>  Danh mục sản phẩm </Text>
-                        </Stack>
-                    </Link>
-                </NextLink>
-                <List>
-                    {CATE_ITEMS.map((navItem) => (
-                        <Box key={navItem.label} >
-                            <Popover trigger={'hover'} placement={'right-start'}>
-                                <PopoverTrigger>
-                                    <Link
-                                        href={navItem.href ?? '#'}
-                                        role={'group'}
-                                        display={'block'}
-                                        p={3}
-                                        rounded={'md'}
-                                        fontSize={'sm'}
-                                        fontWeight={500}
-                                        _hover={{ bg: 'green.50', shadow: 'sm' }}>
-                                        <Stack direction={'row'} align={'center'}>
-                                            <Box>
-                                                <ListItem >
-                                                    <ListIcon as={BsFillBrightnessAltHighFill} color='green.500' />
-                                                    {navItem.label}
-                                                </ListItem>
-                                            </Box>
-                                            {navItem.children && <Flex
-                                                transition={'all .3s ease'}
-                                                transform={'translateX(-10px)'}
-                                                opacity={0}
-                                                _groupHover={{ opacity: '100%', transform: 'translateX(0)' }}
-                                                justify={'flex-end'}
-                                                align={'center'}
-                                                flex={1}>
-                                                <Icon color={'green.400'} w={5} h={5} as={BsChevronRight} />
-                                            </Flex>}
-                                        </Stack>
-                                    </Link>
-                                </PopoverTrigger>
+    return <Grid templateColumns={'repeat(7,1fr)'} gap={6} h={{ base: 'full', md: '400px', lg: '450px' }}>
+        <GridItem colSpan={{ base: 0, lg: 2 }} display={{ base: 'none', lg: 'block' }}>
+            <Stack h={'450px'} direction={'column'} >
+                <Text textAlign={'start'} px='6' py='3' bg='gray.100' rounded='md' shadow={'md'} fontWeight='medium'>
+                    Liên hệ: 0123 123 123
+                </Text>
+                <Stack h='full' direction={'column'} shadow={'md'} rounded='md' >
+                    <NextLink href={'/product'}>
+                        <Link style={{ textDecoration: 'none' }}>
+                            <Stack direction={'row'} alignItems='center' px='6' py='3' fontWeight={500} bg='green.500' color='white' rounded='md' shadow={'md'}>
+                                <Icon as={BsList} />
+                                <Text w={'full'}>  Danh mục sản phẩm </Text>
+                            </Stack>
+                        </Link>
+                    </NextLink>
+                    <Box >
+                        {CATE_ITEMS.map((navItem) => (
+                            <Box key={navItem.label} >
+                                <Popover trigger={'hover'} placement={'right-start'}>
+                                    <PopoverTrigger>
+                                        <Link
+                                            href={navItem.href ?? '#'}
+                                            role={'group'}
+                                            display={'block'}
+                                            px='6' py='3'
+                                            rounded={'md'}
+                                            fontSize={'sm'}
+                                            fontWeight={500}
+                                            _hover={{ bg: 'green.50', shadow: 'sm' }}>
+                                            <Stack direction={'row'} align={'center'}>
+                                                <Stack direction={'row'} align={'center'}>
+                                                    {navItem.ico}
+                                                    <Text>{navItem.label}</Text>
+                                                </Stack>
+                                                {navItem.children && <Flex
+                                                    transition={'all .3s ease'}
+                                                    transform={'translateX(-10px)'}
+                                                    opacity={0}
+                                                    _groupHover={{ opacity: '100%', transform: 'translateX(0)' }}
+                                                    justify={'flex-end'}
+                                                    align={'center'}
+                                                    flex={1}>
+                                                    <Icon color={'green.400'} w={5} h={5} as={BsChevronRight} />
+                                                </Flex>}
+                                            </Stack>
+                                        </Link>
+                                    </PopoverTrigger>
 
-                                {navItem.children && (
-                                    <PopoverContent
-                                        border={0}
-                                        boxShadow={'xl'}
-                                        bg={'white'}
-                                        p={4}
-                                        rounded={'sm'}
-                                        minW={'sm'}>
-                                        <Stack>
-                                            {navItem.children.map((child) => (
-                                                <DesktopSubNav key={child.label} {...child} />
-                                            ))}
-                                        </Stack>
-                                    </PopoverContent>
-                                )}
-                            </Popover>
-                        </Box>
-                    ))}
-                </List>
+                                    {navItem.children && (
+                                        <PopoverContent
+                                            border={0}
+                                            boxShadow={'xl'}
+                                            bg={'white'}
+                                            p={4}
+                                            rounded={'sm'}
+                                            minW={'sm'}>
+                                            <Stack>
+                                                {navItem.children.map((child) => (
+                                                    <CategorySubNav key={child.label} {...child} />
+                                                ))}
+                                            </Stack>
+                                        </PopoverContent>
+                                    )}
+                                </Popover>
+                            </Box>
+                        ))}
+                    </Box>
+                </Stack>
             </Stack>
         </GridItem>
-        <GridItem colSpan={{ base: 5, lg: 4 }}>
-            {/* <Grid
-                h={{ base: '600px', md: '400px'}}
-                templateRows='repeat(2, 1fr)'
-                templateColumns='repeat(8, 1fr)' gap={2} >
-                <GridItem colSpan={{ base: 8, md: 6 }} rowSpan={{ base: 1, md: 2 }}> */}
+        <GridItem colSpan={{ base: 7, lg: 5 }}>
             <Box
                 rounded={'md'}
                 position={'relative'}
-                height={{base: 'full', md:'500px', lg: '400px'}}
+                height={{ base: 'full', md: '400px', lg: '450px' }}
                 width={'full'}
                 overflow={'hidden'}>
                 {/* CSS files for react-slick */}
-                <link
-                    rel="stylesheet"
-                    type="text/css"
-                    charSet="UTF-8"
-                    href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css"
-                />
-                <link
-                    rel="stylesheet"
-                    type="text/css"
-                    href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css"
-                />
-                {/* Left Icon */}
-                {/* <IconButton
-                            aria-label="left-arrow"
-                            bg="blackAlpha"
-                            color='whiteAlpha'
-                            _hover={{ bg: 'whiteAlpha', color: 'blackAlpha' }}
-                            borderRadius="full"
-                            position="absolute"
-                            left={side}
-                            top={top}
-                            transform={'translate(0%, -50%)'}
-                            zIndex={2}
-                            onClick={() => slider?.slickPrev()}>
-                            <BiLeftArrowAlt />
-                        </IconButton> */}
-                {/* Right Icon */}
-                {/* <IconButton
-                            aria-label="right-arrow"
-                            bg="blackAlpha"
-                            color='whiteAlpha'
-                            _hover={{ bg: 'whiteAlpha', color: 'blackAlpha' }}
-                            borderRadius="full"
-                            position="absolute"
-                            right={side}
-                            top={top}
-                            transform={'translate(0%, -50%)'}
-                            zIndex={2}
-                            onClick={() => slider?.slickNext()}>
-                            <BiRightArrowAlt />
-                        </IconButton> */}
-                {/* Slider */}
+                <link rel="stylesheet" type="text/css" charSet="UTF-8" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css" />
+                <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css" />
+                
+                <IconButton
+                    color={'gray.300'}
+                    aria-label="left-arrow"
+                    variant="ghost"
+                    position="absolute"
+                    left={side}
+                    top={top}
+                    transform={'translate(0%, -50%)'}
+                    zIndex={2}
+                    onClick={() => slider?.slickPrev()}>
+                    <FiChevronLeft size="40px" />
+                </IconButton>{/* Left Icon */}
+                <IconButton
+                    color={'gray.300'}
+                    aria-label="right-arrow"
+                    variant="ghost"
+                    position="absolute"
+                    right={side}
+                    top={top}
+                    transform={'translate(0%, -50%)'}
+                    zIndex={2}
+                    onClick={() => slider?.slickNext()}>
+                    <FiChevronRight size="40px" />
+                </IconButton>{/* Right Icon */}
                 <Slider {...settings} ref={(slider: any) => setSlider(slider)}>
                     {cards.map((url, index) => (
                         <Box
                             key={index}
-                            height={{base: 'full', md: '500px', lg: '400px'}}
+                            height={'full'}
                             position="relative"
                             backgroundPosition="center"
                             backgroundRepeat="no-repeat"
-                            backgroundSize="cover"
-                        /* backgroundImage={`url(${url})`} */
-                        >
-                            <Hero />
+                            backgroundSize="cover" >
+                            <Image src={url} layout='responsive' width={widthImage} height={heightImage} alt={`Image slide ${index}`}/>
                         </Box>
                     ))}
-                </Slider>
+                </Slider> {/* Slider */}
             </Box>
-            {/* </GridItem>
-                <GridItem colSpan={{ base: 4, md: 2}}>
-                    <Box bg='gray.300' h={{ base: '200px', md: '100%' }} rounded={'md'}>
-                    </Box>
-                </GridItem>
-                <GridItem colSpan={{ base: 4, md: 2}}>
-                    <Box bg='gray.300' h={{ base: '200px', md: '100%' }} rounded={'md'}>
-                    </Box>
-                </GridItem>
-            </Grid> */}
         </GridItem>
     </Grid>
 }
 
-const DesktopSubNav = ({ label, href, subLabel }: NavItem) => {
+const CategorySubNav = ({ label, href, subLabel }: NavItem) => {
     return (
         <Link
             href={href}

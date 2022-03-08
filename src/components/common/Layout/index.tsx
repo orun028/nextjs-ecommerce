@@ -32,7 +32,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
             <Navbar />
             <main>
                 {/* <Container maxW={'container.xl'}>
-                    <Breadcrumb/>
+                    <Breadcrumb getDefaultTextGenerator={getDefaultTextGenerator} getTextGenerator={getTextGenerator}/>
                 </Container> */}
                 {children}
             </main>

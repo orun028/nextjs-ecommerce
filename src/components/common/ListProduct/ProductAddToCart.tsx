@@ -14,6 +14,7 @@ function ProductAddToCart({ value }: { value: any }) {
     const { isSale, name, price, _id, image, slug } = value
     return (
         <Box
+        mx='auto'
             bg={useColorModeValue('white', 'gray.800')}
             rounded="sm"
             shadow="sm"

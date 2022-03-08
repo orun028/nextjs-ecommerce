@@ -1,47 +1,50 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
-
-.hoverImage{
-    transition: 0.3s ease-in-out;
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap");
+html {
+  scroll-behavior: smooth;
 }
 
-.hoverImage:hover{
-    transform: scale(1.05);
+.hoverImage {
+  transition: 0.3s ease-in-out;
 }
 
-.selectImage{
-    opacity: .5;
+.hoverImage:hover {
+  transform: scale(1.05);
 }
 
-.checkImage{
-    opacity: 1;
+.selectImage {
+  opacity: 0.5;
 }
 
-.border-radius{
-    border-radius: 5px;
+.checkImage {
+  opacity: 1;
 }
 
-.sidebar-linkAdmin-active{
-    background: rgba(255,255,255,.08);
-    color: white !important;
+.border-radius {
+  border-radius: 5px;
 }
 
-.sidebar-linkAdmin-active>svg{
-    color: white !important;
+.sidebar-linkAdmin-active {
+  background: rgba(255, 255, 255, 0.08);
+  color: white !important;
 }
 
-.desktopNav-active{
-    color: #38A169 !important;
+.sidebar-linkAdmin-active > svg {
+  color: white !important;
 }
 
-.wrapperEditor{
-    display: block !important;
-    flex-direction: column;
-    width: 100%;
-    height: 300px;
+.desktopNav-active {
+  color: #38a169 !important;
 }
-.contenEditor{
-    border: 1px solid #f1f1f1 !important;
-    padding: 5px !important;
-    border-radius: 2px !important;
-    height: 65% !important;
+
+.wrapperEditor {
+  display: block !important;
+  flex-direction: column;
+  width: 100%;
+  height: 300px;
+}
+.contenEditor {
+  border: 1px solid #f1f1f1 !important;
+  padding: 5px !important;
+  border-radius: 2px !important;
+  height: 65% !important;
 }

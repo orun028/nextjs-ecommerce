@@ -1,6 +1,6 @@
 import { Fillter, ListProduct, Layout } from '@/components/common';
-import { Pagination } from '@/components/ui';
-import { Center, Container, Grid, GridItem } from '@chakra-ui/react';
+import { Loading, Pagination } from '@/components/ui';
+import { Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Box, Center, Container, Grid, GridItem } from '@chakra-ui/react';
 import { NextPage } from 'next';
 import { useState } from 'react';
 import useSWR from 'swr';
@@ -24,19 +24,37 @@ const ShopPage: NextPage = ({ productVal }: any) => {
     <Layout>
       <Container maxW='container.xl' py='8' minH={'400px'}>
         {error ? <p>Failed to load Product</p>
-          : <Grid templateColumns='repeat(7, 1fr)' gap={8}>
-            <GridItem colSpan={5}>
-              {!data ? <p>Loading Please wait...</p> :
-                <ListProduct layout="all" data={result} rows={4} />
-              }
-              <Center py='6'>
-                <Pagination currentPage={page} lastPage={lastPage} handlePageClick={(e: number) => setPage(e)} />
-              </Center>
-            </GridItem>
-            <GridItem colSpan={2}>
-              <Fillter />
-            </GridItem>
-          </Grid>}
+          : <Box>
+            <Accordion allowToggle display={{ base: 'inherit', md: 'none' }} mb='4' >
+              <AccordionItem borderRadius='md' shadow='md'>
+                <h2>
+                  <AccordionButton>
+                    <Box flex='1' textAlign='left'>
+                      Tìm kiếm
+                    </Box>
+                    <AccordionIcon />
+                  </AccordionButton>
+                </h2>
+                <AccordionPanel pb={4}>
+                  <Fillter layout='row' />
+                </AccordionPanel>
+              </AccordionItem>
+            </Accordion>
+
+            <Grid templateColumns='repeat(7, 1fr)' gap={8}>
+              <GridItem colSpan={{ base: 7, md: 5 }}>
+                {!data ? <Loading/> :
+                  <ListProduct layout="all" data={result} rows={4} />
+                }
+                <Center py='6'>
+                  <Pagination currentPage={page} lastPage={lastPage} handlePageClick={(e: number) => setPage(e)} />
+                </Center>
+              </GridItem>
+              <GridItem colSpan={{ base: 0, md: 2 }}>
+                <Fillter layout='row' title='Tìm kiếm'/>
+              </GridItem>
+            </Grid>
+          </Box>}
       </Container>
     </Layout>
   );

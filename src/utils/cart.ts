@@ -5,6 +5,16 @@ export function getTotalPrice(values: any[]) {
   );
 }
 
+export function getSaleByItem(item: any) {
+  const { status, type, value } = item.isSale;
+  if (status) {
+    if (type == "percent")
+      return (item.price - (value * item.price) / 100);
+    return value;
+  }
+  return item.price;
+}
+
 export function getPriceByItem(item: any) {
   const { status, type, value } = item.isSale;
   if (status) {

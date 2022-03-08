@@ -1,13 +1,13 @@
 import { Layout } from '@/components/common';
 import { NLink, IncrementNumber, Image } from '@/components/ui';
 import { numberToPrice } from '@/utils/format'
-import { getTotalPrice, getPriceByItem } from '@/utils/cart'
-import { Box, Container, Heading, List, ListItem, Stack, Text, Button, Divider, GridItem, Flex, Grid, Link, Input, Checkbox, Icon, IconButton } from '@chakra-ui/react';
+import { getTotalPrice, getPriceByItem, getSaleByItem } from '@/utils/cart'
+import { Box, Container, Heading, List, ListItem, Stack, Text, Button, Divider, GridItem, Flex, Grid, Link, Input, Checkbox, Icon, IconButton, HStack, Spacer, Badge, FormControl, FormLabel } from '@chakra-ui/react';
 import { useState } from 'react';
 import { useAppSelector, useAppDispatch } from '@/hook/redux';
 import { incrementQuantity, decrementQuantity, removeFromCart } from '@/lib/redux/slice/cart';
 import { NextPage } from 'next';
-import { FiDelete, FiTrash2 } from 'react-icons/fi';
+import { FiDelete, FiHeart, FiTrash2 } from 'react-icons/fi';
 
 const CartEmty = () => {
     return (
@@ -30,7 +30,7 @@ const CartEmty = () => {
                 align={'center'}
                 alignSelf={'center'}
                 position={'relative'}>
-                <NLink href={'/product'}>
+                <NLink href={'/product'} chackraLink={{ _hover: { textDecoration: 'none' } }}>
                     <Button
                         colorScheme={'green'} bg={'gray.300'} rounded={'full'} px={6}
                         _hover={{ bg: 'green.500', }}>
@@ -52,12 +52,13 @@ const CartPage: NextPage = () => {
 
     return (
         <Layout>
-            <Container maxW={'container.xl'} py='8'>
+            <Container maxW={'container.xl'} py='8' bg='gray.50'>
                 {cart.length === 0
                     ? <CartEmty />
                     : <Grid gap='4' templateColumns='repeat(6, 1fr)'>
                         <GridItem as={List} colSpan={{ base: 6, lg: 4 }}>
-                            <Stack direction={'column'}>
+                            <Stack bg='white' direction={'column'} shadow='md' rounded={'md'} border='none' borderColor={'transparent'}>
+                                <Text w='full' p='2' fontSize='xl' bg='green.400' color='#ffffff' roundedTop={'md'}>Giỏ hàng</Text>
                                 {/* <Stack px='1' py='1' direction='row' justifyContent='space-between' bg={'#F7FAFC'} shadow='sm' rounded='sm'>
                                     <Checkbox isChecked={checkedItems.length == cart.length}
                                         onChange={() => {
@@ -68,7 +69,9 @@ const CartPage: NextPage = () => {
                                         <IconButton size={'xs'} aria-label='Del cart' fontSize='16px' icon={<FiTrash2 />} />
                                 </Stack> */}
                                 {cart.map((item: any, i: number) => (
-                                    <Stack key={i} as={ListItem} direction='row' p='2' pl='0' justifyContent='space-between' alignItems='start'>
+                                    <Stack
+                                        key={i}
+                                        direction='row' p='2' justifyContent='space-between' alignItems='start'>
                                         <Flex gap='3' position={'relative'}>
                                             {/* <Checkbox isChecked={checkedItems.includes(item.name)}
                                                 onChange={() => {
@@ -77,6 +80,7 @@ const CartPage: NextPage = () => {
                                                 }}
                                                 colorScheme='green' position={'absolute'} top='1' left='1' zIndex='banner' bg={'white'} rounded='md' /> */}
                                             <Image
+                                                className='border-radius'
                                                 width={'100px'}
                                                 height={'100px'}
                                                 layout='intrinsic'
@@ -85,36 +89,59 @@ const CartPage: NextPage = () => {
                                             <Flex direction='column'>
                                                 <NLink href={`/product/${item._id}`}>{item.name}</NLink>
                                                 <Text color={'gray.500'} fontSize='sm'>Color, size</Text>
-                                                <Text>{numberToPrice(item.price)}</Text>
-                                                <IncrementNumber
-                                                    value={item.quantity}
-                                                    increment={() => dispatch(incrementQuantity(item._id))}
-                                                    decrement={() => dispatch(decrementQuantity(item._id))} />
+                                                <HStack>
+                                                    {item.isSale.status
+                                                        && <Badge variant='outline' colorScheme='green' rounded='md'>
+                                                            {item.isSale.type== 'value'? 'SALE!' : `-${item.isSale.value}%`}
+                                                        </Badge>}
+                                                    <Text>{numberToPrice(getSaleByItem(item))}</Text>
+                                                </HStack>
+                                                <HStack maxW='320px'>
+                                                    <Button size={'sm'} onClick={() => dispatch(decrementQuantity(item._id))}>-</Button>
+                                                    <Input size={'sm'} maxW={16} value={item.quantity} onChange={() => { }} />
+                                                    <Button size={'sm'} onClick={() => dispatch(incrementQuantity(item._id))}>+</Button>
+                                                </HStack>
                                             </Flex>
                                         </Flex>
-                                        <Flex direction='column' alignItems={'end'}>
+                                        <Stack direction='column' justifyContent={'end'} alignItems={'end'} height='100px'>
+                                            <Spacer height='full' />
                                             <Text>{numberToPrice(getPriceByItem(item))}</Text>
                                             <Stack direction='row'>
-                                                <Link onClick={() => dispatch(removeFromCart(item._id))}>Delete</Link>
+                                                <IconButton
+                                                    size={'sm'}
+                                                    variant="outline"
+                                                    onClick={() => dispatch(removeFromCart(item._id))}
+                                                    aria-label="open menu"
+                                                    icon={<FiTrash2 />}
+                                                />
                                                 <Divider orientation='vertical' colorScheme='gray' />
-                                                <Link>Like</Link>
+                                                <IconButton
+                                                    size={'sm'}
+                                                    variant="outline"
+                                                    onClick={() => { }}
+                                                    aria-label="open menu"
+                                                    icon={<FiHeart />}
+                                                />
                                             </Stack>
-                                        </Flex>
+                                        </Stack>
                                     </Stack>
                                 ))}
                             </Stack>
                         </GridItem>
                         <GridItem colSpan={{ base: 6, md: 6, lg: 2 }}>
-                            <Stack direction={{ base: 'column', md: 'row', lg: 'column' }} gap='2' mb='2'>
-                                <Stack gap={1} p='5' w={'full'} bg={'#F7FAFC'} rounded={'md'} >
-                                    <Stack direction='row' justifyContent='space-between'>
-                                        <Input placeholder='Nhập mã khuyễn mãi của bạn' bg={'blackAlpha.100'} type='text' value={promo} onChange={(e) => {
+                            <Stack direction={{ base: 'column', md: 'row', lg: 'column' }} gap='4' mb='4'>
+                                <Stack gap={1} p='5' w={'full'} bg='white' shadow='md' rounded={'md'} >
+                                    <Stack direction='row' justifyContent='space-between' alignItems={'end'}>
+                                        <FormControl>
+                                            <FormLabel>Áp dụng kuyến mãi</FormLabel>
+                                            <Input placeholder='Nhập mã khuyễn mãi của bạn' bg={'blackAlpha.100'} type='text' value={promo} onChange={(e) => {
                                             setPromo(e.target.value)
                                         }} />
+                                        </FormControl>
                                         <Button onClick={() => { }}>Lưu</Button>
                                     </Stack>
                                 </Stack>
-                                <Stack gap={2} p='5' w={'full'} bg={'#F7FAFC'} rounded={'md'} >
+                                <Stack gap={2} p='5' w={'full'} bg='white' shadow='md' rounded={'md'} >
                                     <Flex justifyContent={'space-between'}>
                                         <Text>Tạm tính</Text>
                                         <Text>{numberToPrice(AllTotalPrice)}</Text>
@@ -131,7 +158,9 @@ const CartPage: NextPage = () => {
                                 </Stack>
                             </Stack>
                             <Flex flex={1} justify={'end'} align={'center'} position={'relative'} w={'full'}>
-                                <NLink href='/checkout'>
+                                <NLink href='/checkout' chackraLink={{
+                                    _hover: { textDecoration: 'none' }
+                                }}>
                                     <Button colorScheme={'green'}>Thanh toán</Button>
                                 </NLink>
                             </Flex>

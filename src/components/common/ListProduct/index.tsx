@@ -19,7 +19,7 @@ export default function Products({ title, data, layout, rows }: ProductsProp) {
         {layout != 'all' && <Text fontSize={'3xl'} pb={4} fontWeight={'medium'}>
           {title}
         </Text>}
-        {layout != 'all' && <NextLink href={'#'}>
+        {layout != 'all' && title && <NextLink href={'#'}>
           <Link border={'1px'} borderColor='gray.300' p='2' py='1' rounded={'2xl'} fontSize='sm'
             _hover={{ bg: 'gray.300', textDecoration: 'none' }}>
             Xem thêm

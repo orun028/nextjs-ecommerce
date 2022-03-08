@@ -1,14 +1,14 @@
 import { Box, chakra, Container, Link, SimpleGrid, Stack, Text, VisuallyHidden, Input, IconButton, useColorModeValue, } from '@chakra-ui/react';
 import { ReactNode } from 'react';
-import { FaInstagram, FaTwitter, FaYoutube } from 'react-icons/fa';
+import { FaInstagram, FaFacebook, FaYoutube } from 'react-icons/fa';
 import { BiMailSend } from 'react-icons/bi';
 import Logo from './Logo'
 
 const SocialButton = ({ children, label, href, }: { children: ReactNode; label: string; href: string; }) => {
   return (
     <chakra.button
-      bg={useColorModeValue('blackAlpha.100', 'whiteAlpha.100')}
-      rounded={'full'}
+      bg={'whiteAlpha.300'}
+      rounded={'lg'}
       w={8}
       h={8}
       cursor={'pointer'}
@@ -39,8 +39,24 @@ export default function LargeWithNewsletter() {
   return (
     <Box
       bg={useColorModeValue('gray.50', 'gray.900')}
-      color={useColorModeValue('gray.700', 'gray.200')}>
-      <Container as={Stack} maxW={'container.xl'} pt={10}>
+      color={useColorModeValue('gray.700', 'gray.200')} boxShadow='xl'>
+      <Container py='2' maxW={'container.xl'} bg='gray.100' borderTop='1px' borderColor={'gray.300'}>
+        <Stack direction={{base: 'column',md:'row'}} alignItems={{base: 'inherit', md: 'center'}} >
+          <Text w='full' >Hoạt động từ Thứ 2 - 7 Nghỉ CN : Mở cửa 8h - 17h</Text>
+          <Stack direction={'row'} spacing={6} alignItems='start'>
+            <SocialButton label={'Twitter'} href={'#'}>
+              <FaFacebook />
+            </SocialButton>
+            <SocialButton label={'YouTube'} href={'#'}>
+              <FaYoutube />
+            </SocialButton>
+            <SocialButton label={'Instagram'} href={'#'}>
+              <FaInstagram />
+            </SocialButton>
+          </Stack>
+        </Stack>
+      </Container>
+      <Container as={Stack} maxW={'container.xl'} pt={6}>
         <SimpleGrid
           templateColumns={{ sm: '1fr 1fr', md: '2fr 1fr 1fr 2fr' }}
           spacing={8}>
@@ -70,17 +86,6 @@ export default function LargeWithNewsletter() {
             <Link href={'#'}>Liên kết nhà bán hàng</Link>
           </Stack>
           <Stack align={'flex-start'}>
-          <Stack direction={'row'} spacing={6} mb='6'>
-              <SocialButton label={'Twitter'} href={'#'}>
-                <FaTwitter />
-              </SocialButton>
-              <SocialButton label={'YouTube'} href={'#'}>
-                <FaYoutube />
-              </SocialButton>
-              <SocialButton label={'Instagram'} href={'#'}>
-                <FaInstagram />
-              </SocialButton>
-            </Stack>
             <ListHeader>Nhận các thông tin ưu đãi</ListHeader>
             <Stack direction={'row'}>
               <Input
@@ -104,8 +109,8 @@ export default function LargeWithNewsletter() {
           </Stack>
         </SimpleGrid>
         <Text fontSize={'sm'} py='6' mt='6'>
-              Copyright © 2022 NextShop2 - Powered by Ruxx28
-            </Text>
+          Copyright © 2022 NextShop2 - Powered by Ruxx28
+        </Text>
       </Container>
     </Box>
   );

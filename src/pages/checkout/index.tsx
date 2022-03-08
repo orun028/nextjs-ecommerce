@@ -1,5 +1,5 @@
 import { Text, Button, Link, Container, Flex, Heading, HStack, VStack, Stack, Divider, SimpleGrid, GridItem, FormControl, FormLabel, Input, Select, Checkbox, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, useDisclosure, Table, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Layout } from '@/components/common';
 import { NextPage } from 'next';
 import { Image } from '@/components/ui';
@@ -10,6 +10,7 @@ import { useForm } from 'react-hook-form';
 import { getPriceByItem, getTotalPrice } from '@/utils/cart';
 import { resetCart } from '@/lib/redux/slice/cart';
 import { useRouter } from 'next/router';
+import { useSession } from 'next-auth/react';
 
 export async function getStaticProps() {
     const address = await fetch(`https://provinces.open-api.vn/api/?depth=2`)
@@ -18,6 +19,8 @@ export async function getStaticProps() {
 }
 
 const CheckoutPage: NextPage = ({ addressVal }: any) => {
+    const { data } = useSession()
+    const [user, setUser] = useState()
     const router = useRouter()
     const dispatch = useAppDispatch()
     const [pay, setPay] = useState<any>({ status: true, value: null })
@@ -83,6 +86,18 @@ const CheckoutPage: NextPage = ({ addressVal }: any) => {
         alert('Xin lỗi, chức năng này chưa làm!')
     }
 
+    useEffect(()=>{
+        async function getData(){
+            console.log(data?.user.id)
+            const user = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/user?email=${data?.user.email}`)
+            if(user.ok){
+                const userValue = await user.json()
+                setUser(userValue)
+            }
+        }
+        if(data) getData()
+    }, [data])
+
     return (
         <Layout>
             <Container maxW='container.xl' py='8'>
@@ -90,16 +105,16 @@ const CheckoutPage: NextPage = ({ addressVal }: any) => {
                     : <Flex gap='2' direction={{ base: 'column-reverse', md: 'row' }} >
                         <VStack w="full" h="full" p={2} spacing={6} alignItems="flex-start">
                             <VStack spacing={3} alignItems="flex-start">
-                                <Heading size="xl" color={'gray.600'}>Địa chỉ của bạn</Heading>
-                                <Text>Nếu bạn đã có tài khoản, hãy nhấp vào đây để
+                                <Heading size="lg" color={'gray.600'}>Khách hàng</Heading>
+                                {!data && <Text>Nếu bạn đã có tài khoản, hãy nhấp vào đây để
                                     <Nextlink href='/auth'>
                                         <Link>  đăng nhập
                                         </Link>
                                     </Nextlink>.
-                                </Text>
+                                </Text>}
                             </VStack>
                             {addressVal == null && <p>Get api address failure</p>}
-                            {addressVal != null && <form onSubmit={handleSubmit(onSubmit)}>
+                            {addressVal != null && !data && <form onSubmit={handleSubmit(onSubmit)}>
                                 <SimpleGrid columns={2} columnGap={3} rowGap={6} w="full">
                                     <GridItem colSpan={"auto"}>
                                         <FormControl>
@@ -144,15 +159,27 @@ const CheckoutPage: NextPage = ({ addressVal }: any) => {
                                     </GridItem>
                                 </SimpleGrid>
                             </form>}
+                            {data && <Stack direction={'row'} pb='6'>
+                                <Text fontWeight={'medium'}>Họ và tên: </Text>
+                                <Text>{data.user?.name}</Text>
+                            </Stack>}
+                            <Text fontSize={'sm'}>Bạn chưa đăng kí địa chỉ mặt định, vui lòng thêm vào</Text>
+                            <Button>Thêm địa chỉ nhận hàng</Button>
                         </VStack>
                         <VStack w="full" h="full" p={2} spacing={6} align="flex-start" bg={bgColor} rounded='md' shadow={'md'}>
                             <VStack alignItems="flex-start" spacing={3}>
-                                <Heading size="xl" color={'gray.600'}>Your cart</Heading>
+                                <Heading size="lg" color={'gray.600'}>Giỏ hàng của bạn</Heading>
                             </VStack>
                             <VStack w='full'>
                                 {cart.map((e:
                                     { isSale: any, name: string, sku: string, price: number, quantity: number, image: { item: string } }) => <HStack key={e.name} spacing={6} alignItems='start' w="full">
-                                        <Image width={'100px'} height={'100px'} layout='intrinsic' src={e.image.item} alt={`Cart item ${e.name}`} />
+                                        <Image
+                                            className='border-radius'
+                                            width={'100px'}
+                                            height={'100px'}
+                                            layout='intrinsic'
+                                            src={e.image.item}
+                                            alt={`Cart item ${e.name}`} />
                                         <Stack w="full" direction="row" justifyContent="space-between">
                                             <VStack w="full" spacing={0} alignItems="flex-start">
                                                 <Heading size="sm">{e.name}</Heading>
@@ -169,17 +196,17 @@ const CheckoutPage: NextPage = ({ addressVal }: any) => {
                             <VStack spacing={4} alignItems="stretch" w="full">
                                 <HStack justifyContent="space-between">
                                     <Text color={secondaryTextColor}>Tính tạm</Text>
-                                    <Heading size="sm">{numberToPrice(TotalCart)}</Heading>
+                                    <Heading size="sm" fontWeight={'medium'}>{numberToPrice(TotalCart)}</Heading>
                                 </HStack>
                                 <HStack justifyContent="space-between">
                                     <Text color={secondaryTextColor}>Phí vận chuyển</Text>
-                                    <Heading size="sm">{numberToPrice(shipPrice)}</Heading>
+                                    <Heading size="sm" fontWeight={'medium'}>{numberToPrice(shipPrice)}</Heading>
                                 </HStack>
                             </VStack>
                             <Divider />
                             <HStack justifyContent="space-between" w="full" justifyItems={'center'} mt='0'>
                                 <Text color={secondaryTextColor} fontSize='lg' fontWeight='medium'>Total</Text>
-                                <Heading size="md">{numberToPrice(shipPrice + TotalCart)}</Heading>
+                                <Heading size="md" color={'green.500'}>{numberToPrice(shipPrice + TotalCart)}</Heading>
                             </HStack>
                         </VStack>
                     </Flex>

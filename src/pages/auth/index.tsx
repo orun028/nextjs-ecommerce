@@ -1,10 +1,12 @@
-import { Flex, Box, Input, Checkbox, Stack, Link, Button, Heading, Text, Icon, useToast, FormControl, FormHelperText, FormLabel } from '@chakra-ui/react';
+import { Flex, Box, Input, Checkbox, Stack, Link, Button, Heading, Text, Icon, useToast, FormControl, FormHelperText, FormLabel, Center } from '@chakra-ui/react';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 import { getSession, signIn } from "next-auth/react";
-import { NLink } from '@/components/ui';
+import { Loading, NLink } from '@/components/ui';
 import { useForm } from 'react-hook-form';
+import { FaFacebook } from 'react-icons/fa';
+import { FcGoogle } from 'react-icons/fc';
 
 const AuthPage: NextPage = () => {
     const [load, setLoad] = useState(false)
@@ -34,7 +36,7 @@ const AuthPage: NextPage = () => {
     }, [router]);
 
     if (isLoading) {
-        return <p>Loading...</p>;
+        return <Loading/>;
     }
 
     return (
@@ -42,7 +44,7 @@ const AuthPage: NextPage = () => {
             minH={'100vh'}
             align={'center'}
             justify={'center'}>
-            <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
+            <Stack spacing={8} mx={'auto'} maxW={'lg'} px={6}>
                 <Stack align={'center'}>
                     <Heading fontSize={'2xl'}>Đăng nhập vào tài khoản của bạn</Heading>
                     <Text fontSize={'md'} color={'gray.600'}>
@@ -81,13 +83,15 @@ const AuthPage: NextPage = () => {
                 </Box>
                 <Box px={8}>
                     <Stack spacing={4}>
-                        <Button onClick={() => signIn('google')} variant={'outline'} _hover={{ bg: 'gray.300', }}>
-                            <Icon as={IconGoogle} w='5' h='5' mr='2' />
-                            Đăng nhập với Google
+                        <Button onClick={() => signIn('google')} w={'full'} variant={'outline'} leftIcon={<FcGoogle />}>
+                            <Center>
+                                <Text>Đăng nhập với Google</Text>
+                            </Center>
                         </Button>
-                        <Button onClick={() => signIn('facebook')} variant={'outline'} _hover={{ bg: 'gray.300', }}>
-                            <Icon as={IconFaceBook} w='6' h='6' mr='2' />
-                            Đăng nhập với Facebook
+                        <Button onClick={() => signIn('facebook')} w={'full'} colorScheme={'facebook'} leftIcon={<FaFacebook />}>
+                            <Center>
+                                <Text>Đăng nhập với Facebook</Text>
+                            </Center>
                         </Button>
                     </Stack>
                 </Box>

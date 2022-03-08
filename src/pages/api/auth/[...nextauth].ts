@@ -4,7 +4,6 @@ import { clientPromise } from "@/lib/mongodb/connect";
 import FacebookProvider from "next-auth/providers/facebook";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { verifyPassword } from "@/lib/hash";
 
 // https://next-auth.js.org/configuration/options
 export default NextAuth({
@@ -15,38 +14,32 @@ export default NextAuth({
     CredentialsProvider({
       name: "Sign in with email and password",
       credentials: {
-        email: { label: "Email", type: "text", placeholder: 'jonh@doe.com' },
+        email: { label: "Email", type: "text", placeholder: "jonh@doe.com" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        const collection = (await clientPromise).db().collection("users");
-        const result = await collection.findOne({ email: credentials?.email });
-        
-        if (!result) {
-          (await clientPromise).close();
-          throw new Error("No user found with the email");
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_HOST}/api/user/auth`,
+          {
+            method: "POST",
+            body: JSON.stringify(credentials),
+            headers: { "Content-Type": "application/json" },
+          }
+        );
+        const user = await res.json();
+        if (res.ok && user) {
+          return user;
         }
-        const checkPassword = await verifyPassword( credentials?.password, result?.password );
-        if (!checkPassword) {
-          (await clientPromise).close();
-          throw new Error("Password doesnt match");
-        }
-        (await clientPromise).close();
-        return {
-          id: result._id,
-          email: result.email,
-          name: result.name,
-          image: result.image
-        };
+        return null;
       },
     }),
     FacebookProvider({
       clientId: process.env.FACEBOOK_ID,
-      clientSecret: process.env.FACEBOOK_SECRET
+      clientSecret: process.env.FACEBOOK_SECRET,
     }),
     GoogleProvider({
       clientId: process.env.GOOGLE_ID,
-      clientSecret: process.env.GOOGLE_SECRET
+      clientSecret: process.env.GOOGLE_SECRET,
     }),
   ],
   secret: process.env.NEXTAUTH_SECRET,
@@ -73,7 +66,7 @@ export default NextAuth({
   pages: {
     signIn: "/auth", // Displays signin buttons
     // signOut: '/auth/signout', // Displays form with sign out button
-    error: '/auth', // Error code passed in query string as ?error=
+    error: "/auth", // Error code passed in query string as ?error=
     // verifyRequest: '/auth/verify-request', // Used for check email page
     // newUser: null // If set, new users will be directed here on first sign in
   },
@@ -83,25 +76,33 @@ export default NextAuth({
   // https://next-auth.js.org/configuration/callbacks
   callbacks: {
     async signIn({ user, account, profile, email, credentials }) {
-      
       return true;
     },
-    redirect({ url, baseUrl   }) {
-      if (url.startsWith(baseUrl)) return url
+    redirect({ url, baseUrl }) {
+      if (url.startsWith(baseUrl)) return url;
       // Allows relative callback URLs
-      else if (url.startsWith("/")) return new URL(url, baseUrl).toString()
-      return baseUrl
+      else if (url.startsWith("/")) return new URL(url, baseUrl).toString();
+      return baseUrl;
     },
     // async session({ session, token, user }) { return session },
     async jwt({ token, user, account, profile, isNewUser }) {
-      token.userRole = "admin";
+      if (user?.email == "minimvs28@gmail.com") {
+        token.userRole = "admin";
+      }
       return token;
+    },
+    async session({ session, token, user }) {
+      session.user.id = token.sub;
+      return session;
     },
   },
 
   // Events are useful for logging
   // https://next-auth.js.org/configuration/events
-  events: {},
+  events: {
+    async signIn({ user, account, profile, isNewUser }) {},
+    async createUser({ user }) {},
+  },
 
   // Enable debug messages in the console if you are having problems
   debug: false,

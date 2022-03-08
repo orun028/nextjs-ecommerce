@@ -1,6 +1,6 @@
 import { Button, Icon, Input, InputGroup, InputRightElement, Popover, PopoverArrow, PopoverBody, PopoverCloseButton, PopoverContent, PopoverHeader, PopoverTrigger, Spinner } from "@chakra-ui/react";
 import { useState } from "react";
-import { BsSearch } from "react-icons/bs";
+import { FiSearch } from "react-icons/fi";
 
 const SearchBar = () => {
     const item = ['aaa', 'bbb', 'ca', 'iphone']
@@ -28,7 +28,7 @@ const SearchBar = () => {
                     }
                 }} placeholder='Search ....' />
             <InputRightElement>
-                <Icon as={BsSearch} color='gray.300' />
+                <Icon as={FiSearch} color='gray.300' />
             </InputRightElement>
         </InputGroup>
         <Popover isLazy

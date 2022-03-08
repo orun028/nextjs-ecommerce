@@ -5,7 +5,12 @@ import { JWT } from "next-auth/jwt";
 declare module "next-auth" {
   interface Session {
     /** This is an example. You can find me in types/next-auth.d.ts */
-    foo: string;
+    user: {
+      id: string | undefined,
+      name: string,
+      email: string,
+      image: string
+    }
   }
 }
 
@@ -13,6 +18,7 @@ declare module "next-auth" {
 declare module "next-auth/jwt" {
   interface JWT {
     /** This is an example. You can find me in types/next-auth.d.ts */
-    bar: number;
+    /** The user's role. */
+    userRole?: "admin";
   }
 }

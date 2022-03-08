@@ -7,6 +7,7 @@ import { PersistGate } from 'redux-persist/integration/react'
 import { Provider } from 'react-redux'
 import { useStore } from '@/lib/redux'
 import { SessionProvider } from "next-auth/react"
+import { Loading } from '@/components/ui'
 
 function MyApp({ Component, pageProps }: AppProps) {
   const store = useStore(pageProps.initialReduxState)
@@ -22,7 +23,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         session={pageProps.session}
       >
         <Provider store={store}>
-          <PersistGate loading={<div>loading</div>} persistor={persistor}>
+          <PersistGate loading={<Loading/>} persistor={persistor}>
             <Component {...pageProps} />
           </PersistGate>
         </Provider>

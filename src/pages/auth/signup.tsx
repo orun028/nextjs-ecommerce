@@ -1,7 +1,7 @@
 import { Flex, Box, Input, Stack, Button, Heading, Text, FormControl, FormLabel, FormHelperText, useToast, } from '@chakra-ui/react';
 import { NextPage } from 'next';
 import { useEffect, useState } from 'react';
-import { NLink } from '@/components/ui';
+import { Loading, NLink } from '@/components/ui';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/router';
 import { getSession } from 'next-auth/react';
@@ -48,14 +48,14 @@ const AddUserPage: NextPage = () => {
     }, [router]);
 
     if (isLoading) {
-        return <p>Loading...</p>;
+        return <Loading/>;
     }
 
     return <Flex
         minH={'100vh'}
         align={'center'}
         justify={'center'}>
-        <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
+        <Stack spacing={8} mx={'auto'} maxW={'lg'} px={6}>
             <Stack align={'center'}>
                 <Heading fontSize={'2xl'}>Tạo tài khoản của bạn</Heading>
                 <Text fontSize={'md'} color={'gray.600'}>
@@ -71,7 +71,7 @@ const AddUserPage: NextPage = () => {
                         </FormControl>
                         <FormControl id="email" isRequired isInvalid={errors.email}>
                             <FormLabel>Email</FormLabel>
-                            <Input type="email" bg='blackAlpha.100' placeholder='jonh@gmail.com' {...register("email", { maxLength: 20 })} />
+                            <Input type="email" bg='blackAlpha.100' placeholder='jonh@gmail.com' {...register("email", { maxLength: 20 })} autoComplete='false'/>
                         </FormControl>
                         <FormControl id="password" isRequired isInvalid={errors.password}>
                             <FormLabel>Mật khẩu</FormLabel>

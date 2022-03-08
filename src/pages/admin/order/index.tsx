@@ -1,4 +1,4 @@
-import { Pagination } from '@/components/ui';
+import { Loading, Pagination } from '@/components/ui';
 import { Checkbox, Container, Table, Tbody, Td, Th, Thead, Tr, Box, Flex, Text, Stack, Button } from '@chakra-ui/react';
 import { NextPage } from 'next';
 import React, { useState } from 'react';
@@ -28,7 +28,7 @@ const OrderPage: NextPage = () => {
                 <Button colorScheme={'blackAlpha'}>New item</Button>
             </Stack>
 
-            {!data ? <Text>Loading...</Text>
+            {!data ? <Loading/>
                 : <Box bg={'white'} p='2' shadow={'md'} rounded='md'>
                     <Table variant='simple' my={'6'} size='sm'>
                         <Thead>

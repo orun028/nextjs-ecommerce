@@ -9,7 +9,7 @@ export default function MePage() {
         <Layout>
             <Container maxW={'container.xl'}>
                 <Stack>
-
+                <pre>{JSON.stringify(data, null, 2)}</pre>
                 </Stack>
                 <Stack direction={'column'} spacing='6' py='8'>
                     <Box padding='4' maxW={'320px'} w={'full'} bg={useColorModeValue('white', 'gray.900')} boxShadow={'2xl'} rounded={'lg'}>

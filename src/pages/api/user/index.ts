@@ -7,7 +7,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
 
   switch (method) {
     case "GET":
-      if(query.slug){
+      if(query.email){
         res.status(200).json(await controll.getByQuery(collection, query));
         break;
       }

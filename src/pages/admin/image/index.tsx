@@ -1,5 +1,5 @@
 import { LayoutAdmin } from '@/components/common';
-import { ModalCustom, FileUpload, Image } from '@/components/ui';
+import { ModalCustom, FileUpload, Image, Loading } from '@/components/ui';
 import { Button, Container, Text, Link, Stack, useBoolean, useDisclosure, useToast, Flex, Heading, MenuButton, Menu, MenuList, MenuItem, CloseButton, IconButton, Progress, Icon, SimpleGrid } from '@chakra-ui/react';
 import React, { useState } from 'react';
 import clsx from 'clsx';
@@ -123,7 +123,7 @@ const AdminImage: NextPage = () => {
                         onChange={onChangeFile} />
                 </Stack>
             </Stack>
-            {!result ? <Text>Loading...</Text>
+            {!result ? <Loading/>
                 : <SimpleGrid columns={{ base: 2, sm: 3, md: 4, lg: 5, xl: 6 }} spacing={2}>
                     {result && result.map((v: any, i: number) =>
                         <Link className={clsx(
