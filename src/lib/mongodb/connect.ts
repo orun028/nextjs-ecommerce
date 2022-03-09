@@ -2,7 +2,7 @@ import { MongoClient } from "mongodb";
 import mongoose from "mongoose";
 import type { NextApiRequest, NextApiResponse } from "next";
 
-if (!process.env.DATABASE_URL) throw new Error("Please add your Mongo URI to .env.local");
+if (!process.env.DATABASE_URL) throw new Error("Please add your DATABASE_URL to .env");
 const uri: string = process.env.DATABASE_URL
 const options: object = { useUnifiedTopology: true, useNewUrlParser: true };
 
