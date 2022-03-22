@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { OnConnect, listModel, controll } from "@/lib/mongodb";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
+  await OnConnect()
   const { body, query, method } = req;
   const collection = listModel.category;
 
@@ -24,4 +25,4 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
   }
 };
 
-export default OnConnect(handler);
+export default handler;

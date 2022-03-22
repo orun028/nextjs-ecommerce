@@ -5,6 +5,7 @@ import { OnConnect } from "@/lib/mongodb";
 import { NextApiRequest, NextApiResponse } from "next";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
+  await OnConnect()
   const collection = listModel.user;
   if (req.method !== "PATCH") {
     return;
@@ -49,4 +50,4 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
   }
 };
 
-export default OnConnect(handler);
+export default handler;

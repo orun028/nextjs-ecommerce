@@ -4,6 +4,7 @@ import { OnConnect } from "@/lib/mongodb";
 import { NextApiRequest, NextApiResponse } from "next";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
+  await OnConnect()
   const collection = listModel.user;
   if (req.method !== "POST") return;
   const Email = req.body.email;
@@ -24,4 +25,4 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
   res.status(200).json(user);
 };
 
-export default OnConnect(handler);
+export default handler;

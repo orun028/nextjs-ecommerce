@@ -1,14 +1,14 @@
 import NextAuth from "next-auth";
-import { MongoDBAdapter } from "@next-auth/mongodb-adapter";
-import { clientPromise } from "@/lib/mongodb/connect";
 import FacebookProvider from "next-auth/providers/facebook";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 
+// connect db custom
+import Adapters from "next-auth/adapters";
+
 // https://next-auth.js.org/configuration/options
 export default NextAuth({
-  adapter: MongoDBAdapter(clientPromise),
-
+  //adapter: MongoDBAdapter(clientPromise),
   // https://next-auth.js.org/configuration/providers
   providers: [
     CredentialsProvider({

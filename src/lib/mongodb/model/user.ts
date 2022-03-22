@@ -13,7 +13,7 @@ const UserSchema = new Schema({
         district: String,
         city: String
     }, {required: false} ],
-    image: { type: String, default: 'https://static.productionready.io/images/smiley-cyrus.jpg'},
+    image: { type: String, required: false},
     addressActive: { type: Schema.Types.ObjectId },
     role: { type: Schema.Types.ObjectId, ref: 'role' },
 }, { timestamps: true });

@@ -5,6 +5,7 @@ import { getToken } from "next-auth/jwt"
 const secret = process.env.SECRET
 
 const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
+  await OnConnect()
   //const token = await getToken({ req, secret })
   const { query, method, body } = req;
   const { id: _id } = query;
@@ -32,4 +33,4 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
     error: "You must be sign in to view the protected content on this page.",
   })
 };
-export default OnConnect(handler);
+export default handler;

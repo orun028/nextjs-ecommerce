@@ -1,8 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { OnConnect, listModel, controll } from "@/lib/mongodb";
+import prisma from "@/lib/prisma";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
   const { body, query, method } = req;
+  
+  await OnConnect()
   const collection = listModel.user;
 
   switch (method) {
@@ -24,4 +27,4 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
   }
 };
 
-export default OnConnect(handler);
+export default handler;
